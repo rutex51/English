@@ -244,6 +244,20 @@ p{margin:0}
 .stat .k small{display:block;font-weight:400;color:var(--ink-soft);font-size:.88rem}
 .method{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px}
 .confirm{display:flex;flex-direction:column;gap:10px;padding:12px;background:var(--bad-soft);border:2px solid var(--outline)}
+.ver-top{display:flex;align-items:baseline;gap:6px 12px;flex-wrap:wrap}
+.ver-num{font-family:var(--f-pixel);font-weight:700;font-size:1.5rem}
+.ver-top .muted{font-weight:700}
+.ver-st{display:flex;flex-direction:column;gap:10px;padding:12px;background:var(--white);border:2px solid var(--outline)}
+.ver-st p{margin:0;font-weight:700}
+.ver-st p.note{font-weight:400}
+.ver-st.ok{background:var(--good-soft)}
+.ver-st.new{background:var(--diamond-soft)}
+.chg{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.chg li{display:grid;grid-template-columns:3.2em minmax(0,1fr);gap:10px;align-items:baseline}
+.chg li>b{font-family:var(--f-pixel);font-weight:700}
+.chg small{display:block;color:var(--ink-soft);font-size:.85rem}
+.chg-more summary{cursor:pointer;font-weight:700;padding:6px 0;color:var(--ink-soft)}
+.chg-more .chg{margin-top:8px}
 .row-btns{display:flex;gap:10px;flex-wrap:wrap}
 .row-btns .btn{flex:1;min-width:120px}
 
@@ -422,6 +436,20 @@ p{margin:0}
 (function(){
 'use strict';
 const DAY=864e5, INT=[0,0,1,3,7,16], LS='wdj-progress-v1';
+/* ---------- app version: add a line at the top of CHANGES with every update (newest first).
+   Version number = 1.(number of entries − 1). BUILD is filled in by tools/build.py. ---------- */
+const BUILD='97a531a46bda';
+const CHANGES=[
+ ['2026-10-18','Podgląd wersji aplikacji i sprawdzanie aktualizacji w panelu rodzica.'],
+ ['2026-10-17','Nowe filmiki tylko w kamieniach milowych. Po zwykłej wygranej misji dziecko ogląda powtórkę.'],
+ ['2026-10-17','Przycisk po misji: „Otwórz filmik”.'],
+ ['2026-10-17','Kuźnia: sama animacja wykuwania (ok. 8 s), bez filmiku.'],
+ ['2026-10-17','Animacja wykuwania w kuźni: młot, kowadło i rozbłysk w kolorze kruszcu.'],
+ ['2026-10-17','Praca bez internetu i komunikat o nowej wersji.'],
+ ['2026-10-17','Nowa ikona na ekranie początkowym: blok trawy z napisem EN.'],
+ ['2026-10-17','Pierwsza wersja na GitHubie.']
+];
+const APP_VER='1.'+(CHANGES.length-1),APP_DATE=CHANGES[0][0];
 const SCR=['home','lesson','sum','sheet','parent','album','forge','medals','kino'];let kinoPreview=false,OV=null;let cur='home',S=null,confirmReset=false;
 const $=(s)=>document.querySelector(s);
 function h(tag,props){
@@ -1987,6 +2015,7 @@ function renderParent(){
   r.append(h('div',{class:'card pcard'},h('h2',null,'Filmiki'),
     h('p',{class:'muted'},'Dziecko odblokowuje nowe filmiki w kamieniach milowych (liczba misji i opanowane poziomy), a po zwykłej wygranej misji ogląda powtórkę. Tu możesz obejrzeć wszystkie wcześniej, bez odblokowywania.'),
     h('button',{class:'btn secondary',type:'button',onclick:()=>{kinoPreview=true;go('kino');kinoPreview=true;renderKino();}},'Podgląd wszystkich filmików')));
+  r.append(verCard());
   const resetBox=h('div',{class:'card pcard'},h('h2',null,'Zacznij od nowa'));
   if(!confirmReset)resetBox.append(h('button',{class:'btn secondary',type:'button',onclick:()=>{confirmReset=true;renderParent();}},'Wyzeruj postęp'));
   else resetBox.append(h('div',{class:'confirm'},h('p',null,'To usunie cały postęp, diamenty, album stworków i historię lekcji. Imię i ustawienia zostaną. Na pewno?'),
@@ -1995,9 +2024,54 @@ function renderParent(){
   r.append(resetBox);
 }
 
+/* ---------- version card in the parent panel ---------- */
+let VCHK=null;
+const fmtD=d=>{try{return new Date(d+'T12:00:00').toLocaleDateString('pl-PL');}catch(e){return d;}};
+const canCheckVer=()=>!window.claude&&/^[0-9a-f]{12}$/.test(BUILD)&&/^https?:$/.test(location.protocol);
+function verPlace(){if(window.claude)return 'na claude.ai';
+  try{if(navigator.standalone||matchMedia('(display-mode: standalone)').matches)return 'z ikony na ekranie początkowym';}catch(e){}
+  return 'w przeglądarce';}
+function checkVer(){
+  if(!navigator.onLine){VCHK={t:Date.now(),st:'off'};paintVer();return;}
+  VCHK={t:Date.now(),st:'busy'};paintVer();
+  fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('http');return r.json();})
+    .then(j=>{VCHK={t:Date.now(),st:j&&j.build&&j.build!==BUILD?'new':'ok',srv:j||{}};paintVer();})
+    .catch(()=>{VCHK={t:Date.now(),st:navigator.onLine?'err':'off'};paintVer();});}
+function updateNow(){
+  if(UPD){applyUpdate();return;}
+  VCHK={t:Date.now(),st:'upd',srv:VCHK&&VCHK.srv};paintVer();
+  if(!SWREG){location.reload();return;}
+  SWREG.update().catch(()=>{}).then(()=>{let n=0;const iv=setInterval(()=>{n++;
+    if(UPD){clearInterval(iv);applyUpdate();}else if(n>60){clearInterval(iv);location.reload();}},250);});}
+function verStatus(){
+  const again=()=>h('button',{class:'btn secondary',type:'button',onclick:checkVer},'Sprawdź ponownie');
+  const v=VCHK||{st:'busy'},s=v.srv||{},nv=(s.ver?' '+s.ver:'')+(s.date?' z '+fmtD(s.date):'');
+  if(UPD)return ['new',[h('p',null,'Nowa wersja'+nv+' jest już pobrana.'),h('button',{class:'btn primary',type:'button',onclick:applyUpdate},'Odśwież teraz')]];
+  if(v.st==='busy')return ['',[h('p',null,'Sprawdzam, czy jest nowsza wersja…')]];
+  if(v.st==='upd')return ['new',[h('p',null,'Pobieram nową wersję…')]];
+  if(v.st==='ok')return ['ok',[h('p',null,'✓ To jest najnowsza wersja.'),again()]];
+  if(v.st==='new')return ['new',[h('p',null,'Jest nowsza wersja'+nv+'.'),s.notes?h('p',{class:'note'},'Co nowego: '+s.notes):null,
+    h('button',{class:'btn primary',type:'button',onclick:updateNow},'Zaktualizuj teraz')]];
+  if(v.st==='off')return ['',[h('p',null,'Brak internetu, więc nie da się teraz sprawdzić aktualizacji. Aplikacja działa dalej.'),again()]];
+  return ['',[h('p',null,'Nie udało się sprawdzić aktualizacji.'),again()]];}
+function paintVer(){const el=document.getElementById('verSt');if(!el)return;const [cls,kids]=verStatus();el.className='ver-st'+(cls?' '+cls:'');el.replaceChildren(...kids.filter(Boolean));}
+function verCard(){
+  const live=canCheckVer();
+  const item=(c,i)=>h('li',null,h('b',null,'1.'+(CHANGES.length-1-i)),h('span',null,c[1],h('small',null,fmtD(c[0]))));
+  const card=h('div',{class:'card pcard'},h('h2',null,'Wersja aplikacji'),
+    h('div',{class:'ver-top'},h('span',{class:'ver-num'},'Wersja '+APP_VER),h('span',{class:'muted'},'z '+fmtD(APP_DATE))),
+    h('p',{class:'note'},'Uruchomiona '+verPlace()+'.'+(live?' Kod wersji: '+BUILD+'.':'')),
+    window.claude?h('p',{class:'note'},'Na claude.ai zawsze otwiera się najnowsza wersja.'):null,
+    live?h('div',{id:'verSt',class:'ver-st'}):null,
+    h('p',{class:'label'},'Co nowego'),
+    h('ul',{class:'chg'},CHANGES.slice(0,4).map((c,i)=>item(c,i))),
+    CHANGES.length>4?h('details',{class:'chg-more'},h('summary',null,'Starsze zmiany'),h('ul',{class:'chg'},CHANGES.slice(4).map((c,i)=>item(c,i+4)))):null);
+  if(live){setTimeout(()=>{if(!VCHK||(VCHK.st!=='busy'&&VCHK.st!=='upd'&&Date.now()-VCHK.t>60000))checkVer();else paintVer();},0);}
+  return card;}
+
 /* ---------- offline + update notice (only on the GitHub Pages copy) ---------- */
-let UPD=null,swReload=false;
-function showUpd(){let el=document.getElementById('updBar');
+let UPD=null,swReload=false,SWREG=null;
+function showUpd(){paintVer();let el=document.getElementById('updBar');
   if(!UPD||cur==='lesson'||OV){if(el)el.hidden=true;return;}
   if(!el){el=h('div',{id:'updBar',class:'upd',role:'status'},h('button',{class:'btn primary',type:'button',onclick:applyUpdate},'Nowa wersja – dotknij, aby odświeżyć'));document.body.append(el);}
   el.hidden=false;}
@@ -2006,7 +2080,7 @@ function applyUpdate(){swReload=true;try{if(UPD)UPD.postMessage('skip');else loc
   if(window.claude||!('serviceWorker' in navigator))return;
   if(location.protocol!=='https:'&&location.hostname!=='localhost')return;
   let reg=null;const ready=w=>{UPD=w;showUpd();};
-  navigator.serviceWorker.register('sw.js').then(r=>{reg=r;
+  navigator.serviceWorker.register('sw.js').then(r=>{reg=r;SWREG=r;
     if(r.waiting&&navigator.serviceWorker.controller)ready(r.waiting);
     r.addEventListener('updatefound',()=>{const nw=r.installing;if(!nw)return;
       nw.addEventListener('statechange',()=>{if(nw.state==='installed'&&navigator.serviceWorker.controller)ready(nw);});});

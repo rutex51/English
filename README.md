@@ -19,11 +19,17 @@ Gdy w repozytorium pojawi się nowa wersja, aplikacja pokaże przycisk „Nowa w
 
 ## Jak wprowadzić zmianę
 1. Edytuj `src/app.html` (cała aplikacja).
-2. Uruchom `python3 tools/build.py` – zbuduje `index.html` i `sw.js` z nowym numerem wersji.
-3. Zatwierdź i wyślij wszystkie zmienione pliki.
+2. Dopisz na początku listy `CHANGES` w `src/app.html` linijkę z datą i opisem zmiany. Numer wersji (1.x) liczy się sam z liczby wpisów.
+3. Uruchom `python3 tools/build.py` – zbuduje `index.html`, `sw.js` i `version.json` z nowym numerem i kodem wersji.
+4. Zatwierdź i wyślij wszystkie zmienione pliki.
+
+## Wersja aplikacji
+Panel „Dla rodzica” → karta „Wersja aplikacji”: numer i data wersji uruchomionej na tym urządzeniu, lista zmian
+i sprawdzenie, czy na serwerze jest nowsza wersja (`version.json`). Jeśli jest, przycisk „Zaktualizuj teraz” ją wczytuje.
 
 ## Pliki
 - `src/app.html` – źródło aplikacji
 - `index.html` – zbudowana strona (z `tools/build.py`)
 - `sw.js` – praca offline i wykrywanie nowej wersji (generowany)
+- `version.json` – numer, data i kod najnowszej wersji, sprawdzany z panelu rodzica (generowany)
 - `manifest.webmanifest`, `icon-*.png`, `apple-touch-icon.png` – ikona i ustawienia dla „Dodaj do ekranu głównego”
