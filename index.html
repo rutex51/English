@@ -505,8 +505,9 @@ body.walking .app{padding-bottom:80px}
 const DAY=864e5, INT=[0,0,1,3,7,16], LS='wdj-progress-v1';
 /* ---------- app version: add a line at the top of CHANGES with every update (newest first).
    Version number = 1.(number of entries − 1). BUILD is filled in by tools/build.py. ---------- */
-const BUILD='c2e40e934389';
+const BUILD='d2a58b4792ff';
 const CHANGES=[
+ ['2026-10-18','Najwyżej 1 zadanie „połącz w pary” i 1 zadanie „dobrze czy źle” na misję.'],
  ['2026-10-18','Bohater idzie po dużym pasie trawy na dole ekranu. Najwyżej 2 zadania w pary na misję. Naprawiona luka w zdaniu. Kolory nad bohaterem w jego panelu.'],
  ['2026-10-18','Ćwiczenie „połącz w pary”, hełm, zbroja, tarcza i buty w kuźni oraz panel bohatera. Bohater idzie po trawie w czasie misji.'],
  ['2026-10-18','Podgląd wersji aplikacji i sprawdzanie aktualizacji w panelu rodzica.'],
@@ -1567,15 +1568,16 @@ function isUnlocked(l){if(l===1||st.unlockAll)return true;
   if(CARDS.some(c=>c.l===l&&st.cards[c.id]))return true;
   const p=lvStats(l-1);return p.mastered/p.total>=0.6;}
 function newItem(c,mode){return {c,mode,tries:0,state:'ask',wrong:[],opts:c.o?shuffle(c.o.slice()):null,placed:[],tiles:null,showPl:false};}
+const ONE_PER={match:1,judge:1};/* at most this many of these task types in one mission */
 function buildSession(only){
   const N=st.size||10,now=Date.now();
   const pool=CARDS.filter(c=>only?c.l===only:isUnlocked(c.l));
   const due=[],fr=[],rest=[];
   for(const c of pool){const r=st.cards[c.id];if(!r)fr.push(c);else if(r.due<=now)due.push(c);else rest.push(c);}
   due.sort((a,b)=>st.cards[a.id].b-st.cards[b.id].b||st.cards[a.id].due-st.cards[b.id].due);
-  const MAXM=2;let nm=0;
-  const take=(list,k,mode,out)=>{let got=0;for(const c of list){if(got>=k)break;if(c.t==='match'){if(nm>=MAXM)continue;nm++;}out.push({c,mode});got++;}return out;};
-  const frOk=fr.filter(c=>c.t!=='match').length+Math.min(MAXM,fr.filter(c=>c.t==='match').length);
+  const used={};
+  const take=(list,k,mode,out)=>{let got=0;for(const c of list){if(got>=k)break;const cap=ONE_PER[c.t];if(cap!=null){if((used[c.t]||0)>=cap)continue;used[c.t]=(used[c.t]||0)+1;}out.push({c,mode});got++;}return out;};
+  const frOk=fr.filter(c=>ONE_PER[c.t]==null).length+Object.keys(ONE_PER).reduce((a,t)=>a+Math.min(ONE_PER[t],fr.filter(c=>c.t===t).length),0);
   const maxNew=Math.max(3,Math.min(7,N-due.length));
   const newTake=Math.min(maxNew,frOk);
   const dueTake=Math.min(due.length,N-newTake);
@@ -1828,7 +1830,7 @@ function finish(correct){
       if(it.mode==='due'&&prevB>=3)S.memHits=(S.memHits||0)+1;
       if(c.t==='spell'||c.t==='letters')st.stats.letters=(st.stats.letters||0)+1;
       if(it.mode!=='practice'){rec.b=Math.min(5,rec.b+1);rec.due=dayStart(now)+INT[rec.b]*DAY;}}
-    else{S.combo=0;rec.w=(rec.w||0)+1;rec.b=1;rec.due=0;if(!it.requeued&&c.t!=='match'){it.requeued=true;S.items.push(newItem(c,'retry'));}}
+    else{S.combo=0;rec.w=(rec.w||0)+1;rec.b=1;rec.due=0;if(!it.requeued&&ONE_PER[c.t]==null){it.requeued=true;S.items.push(newItem(c,'retry'));}}
     save();
   }else if(!it.first)S.combo=0;
   it.praise=PRAISE[Math.floor(Math.random()*PRAISE.length)];
@@ -2262,7 +2264,7 @@ function renderParent(){
       h('li',null,'Nagrody są tylko za ukończoną misję, nie za pojedyncze odpowiedzi. Przerwana misja zapisuje postęp, ale nic nie daje. Za ukończenie: 2 miedzi; przy 70% dobrych odpowiedzi za pierwszym razem także żelazo, przy 85% złoto, za misję bez błędu (min. 6 zadań) diament. Szmaragd jest za co najmniej 3 dobrze zapamiętane stare zdania, ametyst za pierwszą misję dnia.'),
       h('li',null,'Medale za poziomy przychodzą dopiero wtedy, gdy 60% zdań poziomu trafi do pudełka 3 lub wyżej, czyli po kilku dniach powtórek.'),
       h('li',null,'W kuźni dziecko wymienia kruszce na trofea (miecze, łuki, topory, młoty, włócznie, trójzęby). Po każdej wygranej misji (co najmniej połowa odpowiedzi dobrze za pierwszym razem) ogląda 15-sekundowy filmik, zwykle jeden z już odblokowanych. Nowe filmiki odblokowuje tylko w kamieniach milowych: 1., 5., 10., 15., 20., 30., 40., 50., 60., 75., 90. i 100. misja oraz każdy opanowany poziom (razem 20 filmików).'),
-      h('li',null,'Ćwiczenie „połącz w pary”: dziecko łączy osobę z właściwą formą (I → am, she → is, they → are), czas z formą albo czasownik z formą z przeszłości. Pierwszy błąd daje podpowiedź, drugi pokazuje odpowiedź. W jednej misji są najwyżej 2 takie zadania.'),
+      h('li',null,'Ćwiczenie „połącz w pary”: dziecko łączy osobę z właściwą formą (I → am, she → is, they → are), czas z formą albo czasownik z formą z przeszłości. Pierwszy błąd daje podpowiedź, drugi pokazuje odpowiedź. W jednej misji jest najwyżej 1 takie zadanie i najwyżej 1 zadanie „dobrze czy źle”.'),
       h('li',null,'Bohater: w kuźni dziecko wykuwa też hełmy, zbroje, tarcze i buty, a w panelu „Bohater” zakłada je razem z bronią i wybiera wygląd. W czasie misji bohater idzie po dużym pasie trawy na dole ekranu do skrzyni: każde zadanie to krok, a przy dobrej odpowiedzi podskakuje.'),
       h('li',null,'Ćwiczenia z literkami (am, is, are, was, were, will, isn’t, aren’t) uczą kolejności liter: wybór dobrej pisowni i układanie słowa z liter. Przed odpowiedzią można posłuchać słowa.'),
       h('li',null,'W grze jest 50 stworków. Za każdą ukończoną misję z co najmniej połową dobrych odpowiedzi dziecko łapie jednego nowego do albumu. Podczas lekcji pokazują się losowo stworki już złapane. Każdy poziom ma też stałego przewodnika.'),

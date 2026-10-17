@@ -1,5 +1,5 @@
 // Generowane przez tools/build.py – nie edytuj ręcznie.
-const VERSION = 'c2e40e934389';
+const VERSION = 'd2a58b4792ff';
 const CACHE = 'wdj-app-' + VERSION, FONTS = 'wdj-fonts';
 const ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 self.addEventListener('install', e => {
