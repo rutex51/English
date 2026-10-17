@@ -383,18 +383,20 @@ p{margin:0}
 .fb-cre{width:64px}
 .fb-cre span{overflow-wrap:normal;word-break:normal;font-size:.72rem}
 .pix.hero svg{width:100%;height:100%}
-/* hero walking on the grass during a mission */
-.trail{position:relative;flex:1;min-width:0;height:56px}
-.trail::before{content:"";position:absolute;left:0;right:0;bottom:0;height:10px;background-color:#8A5A35;background-image:var(--ground);background-repeat:repeat-x;background-size:10px 10px;border-top:2px solid var(--outline);image-rendering:pixelated}
-.trail-done{position:absolute;left:0;bottom:9px;height:4px;transition:width .7s steps(7,end);background:repeating-linear-gradient(90deg,#F2C230 0 3px,transparent 3px 10px,#F59BC7 10px 13px,transparent 13px 20px)}
-.trail-chest{position:absolute;right:0;bottom:8px;width:30px;height:20px}
-.trail-chest.open{animation:pop .6s steps(6,end)}
-.trail-hero{position:absolute;bottom:7px;z-index:1;transition:left .7s steps(7,end)}
-.trail-hero.hop{animation:hop .75s steps(8,end)}
-.trail-hero.oops{animation:oops .45s steps(6,end)}
-@keyframes hop{0%,100%{transform:translateY(0)}30%{transform:translateY(-12px)}60%{transform:translateY(0)}80%{transform:translateY(-4px)}}
-@keyframes oops{0%,100%{transform:translateX(0)}20%{transform:translateX(-3px)}40%{transform:translateX(3px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+/* hero walking on the big grass strip at the bottom during a mission */
+.ground{position:relative}
+.walk{position:absolute;left:max(16px, calc(50% - 264px));right:max(16px, calc(50% - 264px));bottom:calc(100% - 9px);height:110px;pointer-events:none}
+.walk-done{position:absolute;left:0;bottom:1px;height:4px;transition:width .8s steps(8,end);background:repeating-linear-gradient(90deg,#F2C230 0 4px,transparent 4px 14px,#F59BC7 14px 18px,transparent 18px 28px)}
+.walk-chest{position:absolute;right:0;bottom:2px}
+.walk-chest.open{animation:pop .6s steps(6,end)}
+.walk-hero{position:absolute;bottom:0;z-index:1;transition:left .8s steps(8,end)}
+.walk-hero.hop{animation:hop .8s steps(8,end)}
+.walk-hero.oops{animation:oops .45s steps(6,end)}
+@keyframes hop{0%,100%{transform:translateY(0)}30%{transform:translateY(-22px)}60%{transform:translateY(0)}80%{transform:translateY(-7px)}}
+@keyframes oops{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
 @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.25)}100%{transform:scale(1)}}
+body.walking .app{padding-bottom:80px}
+@media (min-width:700px){body.walking .app{padding-bottom:104px}}
 .sum-scene{display:flex;align-items:flex-end;justify-content:center;gap:20px;width:100%;padding:6px 12px 9px;background-color:transparent;background-image:var(--ground);background-repeat:repeat-x;background-size:12px 12px;background-position:left bottom}
 .hub-t.wide{grid-column:1/-1}
 .hub-t.wide>.pix.hero{margin:0 4px}
@@ -403,12 +405,18 @@ p{margin:0}
 .hero-stage{width:100%;display:flex;justify-content:center;align-items:flex-end;padding:18px 8px 14px;border:3px solid var(--outline);background-color:var(--sky);background-image:var(--ground),linear-gradient(var(--sky-2,#E8F5FF),var(--sky));background-repeat:repeat-x,no-repeat;background-size:16px 16px,100% 100%;background-position:left bottom,0 0;image-rendering:pixelated}
 .hero-name{font-family:var(--f-pixel);font-weight:700;font-size:1.5rem;margin-top:4px}
 .hero-msg{text-align:center}
-.slot{display:flex;flex-direction:column;gap:8px;padding:10px 0;border-bottom:2px dashed var(--stone-dark)}
-.slot:last-child{border-bottom:0;padding-bottom:0}
-.slot-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
-.slot-h b{font-family:var(--f-pixel);font-weight:700;font-size:1.1rem}
-.slot-h span{font-weight:700;color:var(--ink-soft);font-size:.95rem;text-align:right}
-.slot-opts{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.eqslot{display:flex;flex-direction:column;gap:8px;padding:10px 0;border-bottom:2px dashed var(--stone-dark)}
+.eqslot:last-child{border-bottom:0;padding-bottom:0}
+.eq-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.eq-h b{font-family:var(--f-pixel);font-weight:700;font-size:1.1rem}
+.eq-h span{font-weight:700;color:var(--ink-soft);font-size:.95rem;text-align:right}
+.eq-opts{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.look-card{display:flex;flex-direction:column;gap:10px;padding:14px 16px}
+.look-card h2{font-family:var(--f-pixel);font-weight:700;font-size:1.15rem;margin:0}
+.look-row{display:flex;align-items:center;justify-content:space-between;gap:8px 10px;flex-wrap:wrap}
+.look-row b{font-family:var(--f-pixel);font-weight:700;font-size:1rem}
+.look-row .sw-row{gap:6px}
+.look-row .sw{width:34px;height:34px}
 .eq-opt{aspect-ratio:1;display:grid;place-items:center;padding:2px;background:var(--white);border:3px solid var(--outline);box-shadow:var(--bevel);font-family:var(--f-pixel);font-weight:700;font-size:1.1rem;color:var(--ink-soft);min-width:0}
 .eq-opt .tro{width:80%;height:80%}
 .eq-opt.on{background:var(--hl);box-shadow:inset 0 0 0 3px var(--white);outline:3px solid var(--outline);outline-offset:1px}
@@ -466,9 +474,6 @@ p{margin:0}
   #scr-lesson{gap:10px}
   .lesson-card.is-done{gap:8px}
   .next-bar{padding-top:6px}
-  .trail{height:40px}
-  .trail-hero{bottom:6px}
-  .trail-chest{width:24px;height:16px}
   .mt{min-height:46px;font-size:1.12rem;padding:6px 8px}
   .mcol{gap:8px}
   .match{gap:10px}
@@ -500,8 +505,9 @@ p{margin:0}
 const DAY=864e5, INT=[0,0,1,3,7,16], LS='wdj-progress-v1';
 /* ---------- app version: add a line at the top of CHANGES with every update (newest first).
    Version number = 1.(number of entries − 1). BUILD is filled in by tools/build.py. ---------- */
-const BUILD='34e702c0cecd';
+const BUILD='c2e40e934389';
 const CHANGES=[
+ ['2026-10-18','Bohater idzie po dużym pasie trawy na dole ekranu. Najwyżej 2 zadania w pary na misję. Naprawiona luka w zdaniu. Kolory nad bohaterem w jego panelu.'],
  ['2026-10-18','Ćwiczenie „połącz w pary”, hełm, zbroja, tarcza i buty w kuźni oraz panel bohatera. Bohater idzie po trawie w czasie misji.'],
  ['2026-10-18','Podgląd wersji aplikacji i sprawdzanie aktualizacji w panelu rodzica.'],
  ['2026-10-17','Nowe filmiki tylko w kamieniach milowych. Po zwykłej wygranej misji dziecko ogląda powtórkę.'],
@@ -734,11 +740,9 @@ function heroGrid(eq,look){
   const L=look||{},sk=LOOK.skin[L.skin|0]||LOOK.skin[0],hr=LOOK.hair[L.hair|0]||LOOK.hair[0],sh=LOOK.shirt[L.shirt|0]||LOOK.shirt[0];
   const weapon=()=>{const [w,m]=eq.bron.split('_'),rows=WROWS[w],pal=wPal(m),gp=GRIP[w]||[4,12],dx=Math.round(gp[0]-14),dy=Math.round(14-gp[1]);
     rows.forEach((r,sy)=>{for(let sx=0;sx<16;sx++){const k=r[sx];if(k!=='.'&&pal[k])put(15-sx+dx,sy+dy,pal[k]);}});};
-  const front=eq.bron&&/^luk_/.test(eq.bron);
-  if(eq.bron&&!front)weapon();
   stamp(HERO,{o:'#2E2A24',h:hr[0],H:hr[1],s:sk[0],S:sk[1],k:'#2E2A24',c:'#F29A8E',m:'#B5524A',t:sh[0],T:sh[1],b:'#4A2E18',p:'#3D4A6B',P:'#2C3650',f:'#6B4523'},0,0);
   for(const s of ['buty','zbroja','helm'])if(eq[s]){const o=HERO_ON[s];stamp(o.rows,aPal(eq[s]),o.x,o.y);}
-  if(front)weapon();
+  if(eq.bron){weapon();put(1,13,sk[0]);put(2,13,sk[0]);put(1,14,sk[0]);put(2,14,sk[1]);}
   if(eq.tarcza){const o=HERO_ON.tarcza;stamp(o.rows,aPal(eq.tarcza),o.x,o.y);}
   return g;}
 function heroSvg(eq,look){const g=heroGrid(eq,look);let x0=HW,x1=0;
@@ -1569,11 +1573,15 @@ function buildSession(only){
   const due=[],fr=[],rest=[];
   for(const c of pool){const r=st.cards[c.id];if(!r)fr.push(c);else if(r.due<=now)due.push(c);else rest.push(c);}
   due.sort((a,b)=>st.cards[a.id].b-st.cards[b.id].b||st.cards[a.id].due-st.cards[b.id].due);
+  const MAXM=2;let nm=0;
+  const take=(list,k,mode,out)=>{let got=0;for(const c of list){if(got>=k)break;if(c.t==='match'){if(nm>=MAXM)continue;nm++;}out.push({c,mode});got++;}return out;};
+  const frOk=fr.filter(c=>c.t!=='match').length+Math.min(MAXM,fr.filter(c=>c.t==='match').length);
   const maxNew=Math.max(3,Math.min(7,N-due.length));
-  const newTake=Math.min(maxNew,fr.length);
+  const newTake=Math.min(maxNew,frOk);
   const dueTake=Math.min(due.length,N-newTake);
-  let pick=due.slice(0,dueTake).map(c=>({c,mode:'due'})).concat(fr.slice(0,newTake).map(c=>({c,mode:'new'})));
-  if(pick.length<N){shuffle(rest).sort((a,b)=>st.cards[a.id].b-st.cards[b.id].b);pick=pick.concat(rest.slice(0,N-pick.length).map(c=>({c,mode:'practice'})));}
+  let pick=take(due,dueTake,'due',[]);
+  take(fr,N-pick.length>newTake?newTake:N-pick.length,'new',pick);
+  if(pick.length<N){shuffle(rest).sort((a,b)=>st.cards[a.id].b-st.cards[b.id].b);take(rest,N-pick.length,'practice',pick);}
   const stage={who:0,when:0,match:1,spell:1,pick:1,letters:2,judge:2,build:3};
   pick=shuffle(pick).sort((x,y)=>stage[x.c.t]-stage[y.c.t]);
   return pick.map(p=>newItem(p.c,p.mode));
@@ -1629,6 +1637,7 @@ async function initStore(){
 function go(n,keepScroll){cur=n;for(const s of SCR)document.getElementById('scr-'+s).hidden=s!==n;
   if(n==='home')renderHome();else if(n==='lesson')renderLesson();else if(n==='parent')renderParent();else if(n==='sheet')renderSheet();else if(n==='album')renderAlbum();
   else if(n==='forge')renderForge();else if(n==='medals')renderMedals();else if(n==='kino')renderKino();else if(n==='hero')renderHero();
+  if(n!=='lesson')updateWalker();
   if(n!=='kino')kinoPreview=false;
   if(n!=='parent'&&n!=='kino'){parentOK=false;gateQ=null;pinMsg='';}
   if(typeof showUpd==='function')showUpd();
@@ -1708,9 +1717,10 @@ function sentenceEl(c,it){
 function renderLesson(){
   const r=$('#scr-lesson');r.replaceChildren();
   const it=S.items[S.i],c=it.c;
+  updateWalker();
   r.append(h('div',{class:'lbar'},
     h('button',{class:'icon-btn',type:'button','aria-label':'Zakończ lekcję',onclick:endEarly},'×'),
-    trailEl(),
+    h('div',{class:'prog',role:'progressbar','aria-valuemin':'0','aria-valuemax':String(S.items.length),'aria-valuenow':String(S.i)},h('i',{style:'width:'+(S.i/S.items.length*100)+'%'})),
     S.combo>=2?h('span',{class:'combo-chip',title:'Dobre odpowiedzi z rzędu'},'Seria '+S.combo):null,
     h('span',{class:'count'},(S.i+1)+'/'+S.items.length)));
   if(!st.seenLv[c.l]){if(meet(guideIdx(c.l)))save();r.append(introCard(c.l,()=>{st.seenLv[c.l]=true;save();renderLesson();}));return;}
@@ -1818,7 +1828,7 @@ function finish(correct){
       if(it.mode==='due'&&prevB>=3)S.memHits=(S.memHits||0)+1;
       if(c.t==='spell'||c.t==='letters')st.stats.letters=(st.stats.letters||0)+1;
       if(it.mode!=='practice'){rec.b=Math.min(5,rec.b+1);rec.due=dayStart(now)+INT[rec.b]*DAY;}}
-    else{S.combo=0;rec.w=(rec.w||0)+1;rec.b=1;rec.due=0;if(!it.requeued){it.requeued=true;S.items.push(newItem(c,'retry'));}}
+    else{S.combo=0;rec.w=(rec.w||0)+1;rec.b=1;rec.due=0;if(!it.requeued&&c.t!=='match'){it.requeued=true;S.items.push(newItem(c,'retry'));}}
     save();
   }else if(!it.first)S.combo=0;
   it.praise=PRAISE[Math.floor(Math.random()*PRAISE.length)];
@@ -2029,6 +2039,11 @@ function setLook(k,i){if(!st.hero.look)st.hero.look={};st.hero.look[k]=i;save();
 function renderHero(){
   const r=$('#scr-hero');r.replaceChildren();const eq=heroEq(),n=Object.keys(eq).length;
   r.append(backHeader(),h('h1',{class:'hello'},'Bohater'));
+  const look=st.hero.look||{},sw=(k,lab,names)=>h('div',{class:'look-row'},h('b',null,lab),
+    h('div',{class:'sw-row'},LOOK[k].map((c,i)=>h('button',{class:'sw'+((look[k]|0)===i?' on':''),type:'button','aria-pressed':String((look[k]|0)===i),'aria-label':lab+': '+names[i],title:names[i],style:'background:'+c[0],onclick:()=>setLook(k,i)}))));
+  r.append(h('div',{class:'card look-card'},h('h2',null,'Wygląd'),
+    sw('skin','Skóra',['jasna','średnia','śniada','ciemna']),sw('hair','Włosy',['rude','blond','brązowe','czarne','fioletowe']),sw('shirt','Koszulka',['czerwona','niebieska','zielona','pomarańczowa','fioletowa']),
+    eq.helm?h('p',{class:'muted small'},'Włosy są schowane pod hełmem. Zdejmij hełm, żeby je zobaczyć.'):null));
   r.append(h('div',{class:'card hero-card'},
     h('div',{class:'hero-stage'},heroEl(6,'hero-big')),
     h('p',{class:'hero-name'},st.name||'Kuba'),
@@ -2044,28 +2059,33 @@ function renderHero(){
     else for(const m of MINS){const own=!!st.trophies[s.id+'_'+m],nm=tName(ITEM[s.id],m);
       opts.push(own?h('button',{class:'eq-opt'+(cv===m?' on':''),type:'button','aria-pressed':String(cv===m),'aria-label':nm,title:nm,onclick:()=>equip(s.id,m)},trophyEl(s.id,m))
         :h('span',{class:'eq-opt locked',title:nm+': wykuj w kuźni',role:'img','aria-label':nm+': jeszcze nie wykute'},trophyEl(s.id,m)));}
-    eqCard.append(h('div',{class:'slot'},h('div',{class:'slot-h'},h('b',null,s.name),h('span',null,eqName(s.id,cv))),h('div',{class:'slot-opts'},opts),note?h('p',{class:'muted small'},note):null));
+    eqCard.append(h('div',{class:'eqslot'},h('div',{class:'eq-h'},h('b',null,s.name),h('span',null,eqName(s.id,cv))),h('div',{class:'eq-opts'},opts),note?h('p',{class:'muted small'},note):null));
   }
   r.append(eqCard);
-  const look=st.hero.look||{},sw=(k,lab,names)=>h('div',{class:'slot'},h('div',{class:'slot-h'},h('b',null,lab),h('span',null,names[look[k]|0]||'')),
-    h('div',{class:'sw-row'},LOOK[k].map((c,i)=>h('button',{class:'sw'+((look[k]|0)===i?' on':''),type:'button','aria-pressed':String((look[k]|0)===i),'aria-label':lab+': '+names[i],style:'background:'+c[0],onclick:()=>setLook(k,i)}))));
-  r.append(h('div',{class:'card pcard'},h('h2',null,'Wygląd'),
-    sw('skin','Skóra',['jasna','średnia','śniada','ciemna']),sw('hair','Włosy',['rude','blond','brązowe','czarne','fioletowe']),sw('shirt','Koszulka',['czerwona','niebieska','zielona','pomarańczowa','fioletowa'])));
   const cf=canForgeAny();
   r.append(h('button',{class:cf?'btn primary big':'btn secondary',type:'button',onclick:()=>go('forge')},cf?'Masz kruszce. Idź do kuźni!':'Idź do kuźni'));
 }
-/* ---------- the hero walks along the grass during a mission ---------- */
-function trailScale(){try{return matchMedia('(max-height:740px)').matches?1.375:2;}catch(e){return 2;}}
-function trailEl(){
+/* ---------- the hero walks along the big grass strip at the bottom during a mission ---------- */
+function walkScale(){return innerWidth>=700?4:3;}
+function updateWalker(){
+  const g=document.querySelector('.ground');if(!g)return;
+  let w=document.getElementById('walk');const on=cur==='lesson'&&!!S&&!!S.items&&S.items.length>0;
+  document.body.classList.toggle('walking',on);
+  if(!on){if(w)w.hidden=true;return;}
+  if(!w){w=h('div',{id:'walk',class:'walk','aria-hidden':'true'});g.append(w);}
+  w.hidden=false;
   const N=S.items.length,it=S.items[S.i],done=!!it&&it.state==='done',p=Math.min(1,(S.i+(done?1:0))/N);
-  const hero=heroEl(trailScale(),'trail-hero'),w=hero.style.width,at=q=>'calc((100% - '+w+' - 34px) * '+q.toFixed(4)+')';
+  const sc=walkScale(),hero=heroEl(sc,'walk-hero'),hw=hero.style.width,cw=12*sc;
+  const at=q=>'calc((100% - '+hw+' - '+(cw+10)+'px) * '+q.toFixed(4)+')';
   const from=S.trailP==null?p:S.trailP;hero.style.left=at(from);
   if(done&&it.correct&&!it.hop){it.hop=true;hero.classList.add('hop');}
   else if(it&&(it.state==='hint'||(done&&!it.correct))&&!it.oops){it.oops=true;hero.classList.add('oops');}
-  if(from!==p)requestAnimationFrame(()=>requestAnimationFrame(()=>{hero.style.left=at(p);}));
+  const chest=pix(CHEST,CHEST_P,'walk-chest'+(p>=1?' open':''));chest.style.width=cw+'px';chest.style.height=(8*sc)+'px';
+  const fl=h('i',{class:'walk-done'});fl.style.width=(from*100).toFixed(2)+'%';
+  w.replaceChildren(fl,chest,hero);
+  if(from!==p)requestAnimationFrame(()=>requestAnimationFrame(()=>{hero.style.left=at(p);fl.style.width=(p*100).toFixed(2)+'%';}));
   S.trailP=p;
-  return h('div',{class:'trail',role:'progressbar','aria-label':'Bohater idzie do skrzyni','aria-valuemin':'0','aria-valuemax':String(N),'aria-valuenow':String(S.i+(done?1:0))},
-    h('i',{class:'trail-done',style:'width:'+(p*100).toFixed(2)+'%'}),pix(CHEST,CHEST_P,'trail-chest'+(p>=1?' open':'')),hero);}
+}
 
 /* ---------- album ---------- */
 function renderAlbum(){
@@ -2242,8 +2262,8 @@ function renderParent(){
       h('li',null,'Nagrody są tylko za ukończoną misję, nie za pojedyncze odpowiedzi. Przerwana misja zapisuje postęp, ale nic nie daje. Za ukończenie: 2 miedzi; przy 70% dobrych odpowiedzi za pierwszym razem także żelazo, przy 85% złoto, za misję bez błędu (min. 6 zadań) diament. Szmaragd jest za co najmniej 3 dobrze zapamiętane stare zdania, ametyst za pierwszą misję dnia.'),
       h('li',null,'Medale za poziomy przychodzą dopiero wtedy, gdy 60% zdań poziomu trafi do pudełka 3 lub wyżej, czyli po kilku dniach powtórek.'),
       h('li',null,'W kuźni dziecko wymienia kruszce na trofea (miecze, łuki, topory, młoty, włócznie, trójzęby). Po każdej wygranej misji (co najmniej połowa odpowiedzi dobrze za pierwszym razem) ogląda 15-sekundowy filmik, zwykle jeden z już odblokowanych. Nowe filmiki odblokowuje tylko w kamieniach milowych: 1., 5., 10., 15., 20., 30., 40., 50., 60., 75., 90. i 100. misja oraz każdy opanowany poziom (razem 20 filmików).'),
-      h('li',null,'Ćwiczenie „połącz w pary”: dziecko łączy osobę z właściwą formą (I → am, she → is, they → are), czas z formą albo czasownik z formą z przeszłości. Pierwszy błąd daje podpowiedź, drugi pokazuje odpowiedź.'),
-      h('li',null,'Bohater: w kuźni dziecko wykuwa też hełmy, zbroje, tarcze i buty, a w panelu „Bohater” zakłada je razem z bronią i wybiera wygląd. W czasie misji bohater idzie po trawie do skrzyni: każde zadanie to krok, a przy dobrej odpowiedzi podskakuje.'),
+      h('li',null,'Ćwiczenie „połącz w pary”: dziecko łączy osobę z właściwą formą (I → am, she → is, they → are), czas z formą albo czasownik z formą z przeszłości. Pierwszy błąd daje podpowiedź, drugi pokazuje odpowiedź. W jednej misji są najwyżej 2 takie zadania.'),
+      h('li',null,'Bohater: w kuźni dziecko wykuwa też hełmy, zbroje, tarcze i buty, a w panelu „Bohater” zakłada je razem z bronią i wybiera wygląd. W czasie misji bohater idzie po dużym pasie trawy na dole ekranu do skrzyni: każde zadanie to krok, a przy dobrej odpowiedzi podskakuje.'),
       h('li',null,'Ćwiczenia z literkami (am, is, are, was, were, will, isn’t, aren’t) uczą kolejności liter: wybór dobrej pisowni i układanie słowa z liter. Przed odpowiedzią można posłuchać słowa.'),
       h('li',null,'W grze jest 50 stworków. Za każdą ukończoną misję z co najmniej połową dobrych odpowiedzi dziecko łapie jednego nowego do albumu. Podczas lekcji pokazują się losowo stworki już złapane. Każdy poziom ma też stałego przewodnika.'),
       h('li',null,'Pomaga, gdy dziecko czyta zdania na głos albo powtarza je po lektorce.')),
