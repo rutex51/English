@@ -382,6 +382,57 @@ p{margin:0}
 .inv-t{display:flex;flex-direction:column;align-items:center;min-width:0;line-height:1.1}
 .fb-cre{width:64px}
 .fb-cre span{overflow-wrap:normal;word-break:normal;font-size:.72rem}
+.pix.hero svg{width:100%;height:100%}
+/* hero walking on the grass during a mission */
+.trail{position:relative;flex:1;min-width:0;height:56px}
+.trail::before{content:"";position:absolute;left:0;right:0;bottom:0;height:10px;background-color:#8A5A35;background-image:var(--ground);background-repeat:repeat-x;background-size:10px 10px;border-top:2px solid var(--outline);image-rendering:pixelated}
+.trail-done{position:absolute;left:0;bottom:9px;height:4px;transition:width .7s steps(7,end);background:repeating-linear-gradient(90deg,#F2C230 0 3px,transparent 3px 10px,#F59BC7 10px 13px,transparent 13px 20px)}
+.trail-chest{position:absolute;right:0;bottom:8px;width:30px;height:20px}
+.trail-chest.open{animation:pop .6s steps(6,end)}
+.trail-hero{position:absolute;bottom:7px;z-index:1;transition:left .7s steps(7,end)}
+.trail-hero.hop{animation:hop .75s steps(8,end)}
+.trail-hero.oops{animation:oops .45s steps(6,end)}
+@keyframes hop{0%,100%{transform:translateY(0)}30%{transform:translateY(-12px)}60%{transform:translateY(0)}80%{transform:translateY(-4px)}}
+@keyframes oops{0%,100%{transform:translateX(0)}20%{transform:translateX(-3px)}40%{transform:translateX(3px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.25)}100%{transform:scale(1)}}
+.sum-scene{display:flex;align-items:flex-end;justify-content:center;gap:20px;width:100%;padding:6px 12px 9px;background-color:transparent;background-image:var(--ground);background-repeat:repeat-x;background-size:12px 12px;background-position:left bottom}
+.hub-t.wide{grid-column:1/-1}
+.hub-t.wide>.pix.hero{margin:0 4px}
+/* hero panel */
+.hero-card{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.hero-stage{width:100%;display:flex;justify-content:center;align-items:flex-end;padding:18px 8px 14px;border:3px solid var(--outline);background-color:var(--sky);background-image:var(--ground),linear-gradient(var(--sky-2,#E8F5FF),var(--sky));background-repeat:repeat-x,no-repeat;background-size:16px 16px,100% 100%;background-position:left bottom,0 0;image-rendering:pixelated}
+.hero-name{font-family:var(--f-pixel);font-weight:700;font-size:1.5rem;margin-top:4px}
+.hero-msg{text-align:center}
+.slot{display:flex;flex-direction:column;gap:8px;padding:10px 0;border-bottom:2px dashed var(--stone-dark)}
+.slot:last-child{border-bottom:0;padding-bottom:0}
+.slot-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.slot-h b{font-family:var(--f-pixel);font-weight:700;font-size:1.1rem}
+.slot-h span{font-weight:700;color:var(--ink-soft);font-size:.95rem;text-align:right}
+.slot-opts{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.eq-opt{aspect-ratio:1;display:grid;place-items:center;padding:2px;background:var(--white);border:3px solid var(--outline);box-shadow:var(--bevel);font-family:var(--f-pixel);font-weight:700;font-size:1.1rem;color:var(--ink-soft);min-width:0}
+.eq-opt .tro{width:80%;height:80%}
+.eq-opt.on{background:var(--hl);box-shadow:inset 0 0 0 3px var(--white);outline:3px solid var(--outline);outline-offset:1px}
+.eq-opt.locked{background:transparent;border-style:dashed;box-shadow:none}
+.eq-opt.locked .tro{filter:grayscale(1);opacity:.3}
+.sw-row{display:flex;gap:10px;flex-wrap:wrap}
+.sw{width:42px;height:42px;border:3px solid var(--outline);box-shadow:var(--bevel)}
+.sw.on{outline:3px solid var(--outline);outline-offset:3px}
+.worn{display:flex;align-items:center;gap:10px;font-weight:700;justify-content:center}
+/* forge tabs */
+.segs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg{position:relative;font-family:var(--f-pixel);font-weight:700;font-size:1.05rem;padding:10px 8px;background:var(--stone);border:3px solid var(--outline);box-shadow:var(--bevel),0 3px 0 var(--outline);color:var(--ink)}
+.seg.on{background:var(--hl);color:var(--hl-ink);transform:translateY(2px);box-shadow:var(--bevel),0 1px 0 var(--outline)}
+.seg-dot{position:absolute;top:-10px;right:-6px;background:var(--bad);color:var(--white);border:2px solid var(--outline);font-size:.85rem;line-height:1;padding:2px 6px}
+/* match the pairs */
+.match{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mcol{display:flex;flex-direction:column;gap:10px}
+.mt{min-height:54px;padding:8px 10px;background:var(--plank);border:3px solid var(--outline);box-shadow:var(--bevel),var(--drop);font-size:1.25rem;font-weight:700;color:var(--ink);line-height:1.15;overflow-wrap:anywhere}
+.mt.sel{background:var(--hl);color:var(--hl-ink);transform:translateY(2px);box-shadow:var(--bevel),0 2px 0 var(--outline);outline:3px dashed var(--outline);outline-offset:2px}
+.mt.on{background:var(--pc);color:var(--ink);box-shadow:var(--bevel);transform:translateY(3px)}
+.mt.bad{background:var(--bad-soft);color:var(--bad);animation:nope .3s steps(4,end)}
+.match.done{gap:8px}
+.match.done .mt{min-height:0;padding:6px 10px;font-size:1.08rem;font-weight:500;transform:none;text-align:center}
+.match.done .mt b{font-weight:800}
 @media (max-width:440px){
   .inv{grid-template-columns:repeat(3,minmax(0,1fr))}
   .inv-i{flex-direction:row;justify-content:flex-start;gap:6px;padding:5px 6px}
@@ -412,6 +463,16 @@ p{margin:0}
   .icon-btn{width:40px;height:40px}
   .intro{gap:10px}
   .intro-head .cre{width:64px;height:64px}
+  #scr-lesson{gap:10px}
+  .lesson-card.is-done{gap:8px}
+  .next-bar{padding-top:6px}
+  .trail{height:40px}
+  .trail-hero{bottom:6px}
+  .trail-chest{width:24px;height:16px}
+  .mt{min-height:46px;font-size:1.12rem;padding:6px 8px}
+  .mcol{gap:8px}
+  .match{gap:10px}
+  .sum-scene .sum-hero{transform:scale(.85);transform-origin:bottom center}
 }
 
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
@@ -429,6 +490,7 @@ p{margin:0}
   <section class="scr" id="scr-forge" hidden></section>
   <section class="scr" id="scr-medals" hidden></section>
   <section class="scr" id="scr-kino" hidden></section>
+  <section class="scr" id="scr-hero" hidden></section>
 </div>
 <div class="ground" aria-hidden="true"></div>
 
@@ -438,8 +500,9 @@ p{margin:0}
 const DAY=864e5, INT=[0,0,1,3,7,16], LS='wdj-progress-v1';
 /* ---------- app version: add a line at the top of CHANGES with every update (newest first).
    Version number = 1.(number of entries − 1). BUILD is filled in by tools/build.py. ---------- */
-const BUILD='97a531a46bda';
+const BUILD='34e702c0cecd';
 const CHANGES=[
+ ['2026-10-18','Ćwiczenie „połącz w pary”, hełm, zbroja, tarcza i buty w kuźni oraz panel bohatera. Bohater idzie po trawie w czasie misji.'],
  ['2026-10-18','Podgląd wersji aplikacji i sprawdzanie aktualizacji w panelu rodzica.'],
  ['2026-10-17','Nowe filmiki tylko w kamieniach milowych. Po zwykłej wygranej misji dziecko ogląda powtórkę.'],
  ['2026-10-17','Przycisk po misji: „Otwórz filmik”.'],
@@ -450,7 +513,7 @@ const CHANGES=[
  ['2026-10-17','Pierwsza wersja na GitHubie.']
 ];
 const APP_VER='1.'+(CHANGES.length-1),APP_DATE=CHANGES[0][0];
-const SCR=['home','lesson','sum','sheet','parent','album','forge','medals','kino'];let kinoPreview=false,OV=null;let cur='home',S=null,confirmReset=false;
+const SCR=['home','lesson','sum','sheet','parent','album','forge','medals','kino','hero'];let kinoPreview=false,OV=null;let cur='home',S=null,confirmReset=false;
 const $=(s)=>document.querySelector(s);
 function h(tag,props){
   const e=document.createElement(tag);
@@ -622,7 +685,70 @@ function weaponRows(kind){
 }
 const WROWS={};for(const w of WEAPONS)WROWS[w.id]=weaponRows(w.id);
 const wPal=(mat)=>({o:'#2E2A24',L:MIN[mat].L,M:MIN[mat].M,D:MIN[mat].D,w:'#A8743F',W:'#6B4523',S:'#4A4038'});
-function trophyEl(wid,mat,cls){return pix(WROWS[wid],wPal(mat),'tro'+(cls?' '+cls:''));}
+/* ---------- armor: helmet, chestplate, boots, shield (forged like weapons) ---------- */
+for(const w of WEAPONS){w.kind='weapon';}
+const ARMOR=[{id:'helm',name:'hełm',g:0,cost:6,kind:'armor'},{id:'zbroja',name:'zbroja',g:1,cost:9,kind:'armor'},{id:'tarcza',name:'tarcza',g:1,cost:7,kind:'armor'},{id:'buty',name:'buty',g:2,cost:5,kind:'armor'}];
+const ITEMS=WEAPONS.concat(ARMOR),ITEM={};for(const it of ITEMS)ITEM[it.id]=it;
+const ADJ_PL={miedz:'Miedziane',zelazo:'Żelazne',zloto:'Złote',szmaragd:'Szmaragdowe',ametyst:'Ametystowe',diament:'Diamentowe'};
+for(const k of MINS)MIN[k].adj[2]=ADJ_PL[k];
+const EMB={miedz:'#FFE7A8',zelazo:'#E5484D',zloto:'#E5484D',szmaragd:'#FFF3A6',ametyst:'#FFF3A6',diament:'#2A50C2'};
+const aPal=(mat)=>({o:'#2E2A24',L:MIN[mat].L,M:MIN[mat].M,D:MIN[mat].D,E:EMB[mat]});
+const BOOT1=['oooo...','oLMo...','oLMo...','oLMo...','oLMMooo','oLMMMMo','oDDDDDo','ooooooo'];
+const AICON={
+ helm:['................','................','.....oooooo.....','...ooLLMMMMoo...','..oLLMMMMMMMDo..','..oLMMMMMMMMDo..','.oLMMMMMMMMMMDo.','.oLMMMMMMMMMMDo.',
+   '.oMDDDDDDDDDDDo.','.oMMo......oMDo.','.oMMo......oMDo.','.oMMo......oDDo.','.oMDo......oDDo.','.oooo......oooo.','................','................'],
+ zbroja:['................','................','..ooo......ooo..','.oLMMo....oMMDo.','oLMMMMooooMMMMDo','oLMMMMMMMMMMMMDo','oooLMMMLLMMMDooo','..oLMMMLLMMMDo..',
+   '..oLMMMMMMMMDo..','..oLMMMMMMMMDo..','..oLMMMMMMMMDo..','..oLMMMMMMMMDo..','..oDDDDDDDDDDo..','..oooooooooooo..','................','................'],
+ tarcza:['................','..oooooooooooo..','..oLLLLMMMMMDo..','..oLMMMEEMMMDo..','..oLMMMEEMMMDo..','..oLMEEEEEEMDo..','..oLMEEEEEEMDo..','..oLMMMEEMMMDo..',
+   '..oLMMMEEMMMDo..','..oLMMMMMMMMDo..','...oLMMMMMMDo...','....oLMMMMDo....','.....oMMMDo.....','......oDDo......','.......oo.......','................'],
+ buty:(()=>{const g=[];for(let y=0;y<16;y++)g.push(new Array(16).fill('.'));
+   BOOT1.forEach((r,y)=>{for(let x=0;x<7;x++)if(r[x]!=='.'){g[y+4][x]=r[x];g[y+4][x+8]=r[x];}});return g.map(r=>r.join(''));})()};
+const IROWS=Object.assign({},WROWS,AICON);
+const iPal=(id,mat)=>ITEM[id]&&ITEM[id].kind==='armor'?aPal(mat):wPal(mat);
+function trophyEl(wid,mat,cls){return pix(IROWS[wid],iPal(wid,mat),'tro'+(cls?' '+cls:''));}
+
+/* ---------- the hero: an original blocky kid, dressed in forged gear ---------- */
+const HERO=['...oooooooooo...','...ohhhhhhhho...','...ohhhhhhhHo...','...ohssssshHo...','...osssssssso...','...osksssskso...','...osksssskso...','...ocssmmssco...',
+ '...oSSSSSSSSo...','oooooooooooooooo','ottottttttttotTo','ottottttttttotTo','otTottttttttotTo','ossottttttttosSo','ossobbbbbbbbosSo','oooopppppppPoooo',
+ '...oppppppPPo...','...oppppppPPo...','...opppooppPo...','...opppoopPPo...','...offfoofffo...','...offfoofffo...','...oooooooooo...'];
+const HERO_ON={
+ helm:{x:0,y:-1,rows:['....oooooooo....','...oLLMMMMMDo...','..oLMMMMMMMMDo..','..oLMMMMMMMMDo..','..oMDDDDDDDDDo..','..oMo......oDo..','..oMo......oDo..','..oMo......oDo..','..ooo......ooo..']},
+ zbroja:{x:0,y:9,rows:['oooooooooooooooo','oLMoLMMMMMMDoMDo','oMDoLMMLLMMDoMDo','ooooLMMMMMMDoooo','...oLMMMMMMDo...','...oDDDDDDDDo...']},
+ buty:{x:0,y:19,rows:['...oDDDooDDDo...','...oLMMooLMMo...','..oLMMDooLMMDo..','..oooooooooooo..']},
+ tarcza:{x:10,y:11,rows:['ooooooooo','oLLLMMMDo','oLMMEMMDo','oLMEEEMDo','oLMMEMMDo','oLMMEMMDo','oLMMMMMDo','.oLMMMDo.','..oMMDo..','...oDo...','....o....']}};
+const GRIP={miecz:[3.8,12.2],luk:[9.4,6.6],topor:[4.5,12.3],mlot:[4.5,12.5],wlocznia:[5,11],trojzab:[4.5,11.5]};
+const SLOTS=[{id:'helm',name:'Hełm'},{id:'zbroja',name:'Zbroja'},{id:'tarcza',name:'Tarcza'},{id:'buty',name:'Buty'},{id:'bron',name:'Broń'}];
+const LOOK={
+ skin:[['#F5CFA6','#E3AE85'],['#EBB98F','#D19A6C'],['#C68B5E','#A86F45'],['#8D5A3B','#714429']],
+ hair:[['#E0822F','#B35E1A'],['#F2D16B','#C9A43F'],['#6B4226','#4A2C17'],['#2E2A24','#141210'],['#B79CF0','#8064C8']],
+ shirt:[['#E5484D','#B0303A'],['#2A50C2','#1C3A8F'],['#4E922A','#356B1A'],['#F2A93B','#C67E14'],['#8458C8','#5E3A99']]};
+const HW=29,HH=24,HOX=10,HOY=1;
+function heroEq(){const e=(st.hero&&st.hero.eq)||{},out={};
+  for(const s of ['helm','zbroja','tarcza','buty'])if(e[s]&&st.trophies[s+'_'+e[s]])out[s]=e[s];
+  if(e.bron&&st.trophies[e.bron]){const [w,m]=e.bron.split('_');if(WROWS[w]&&MIN[m])out.bron=e.bron;}
+  return out;}
+function heroGrid(eq,look){
+  const g=[];for(let y=0;y<HH;y++)g.push(new Array(HW).fill(null));
+  const put=(x,y,c)=>{x+=HOX;y+=HOY;if(c&&x>=0&&y>=0&&x<HW&&y<HH)g[y][x]=c;};
+  const stamp=(rows,pal,ox,oy)=>rows.forEach((r,y)=>{for(let x=0;x<r.length;x++){const k=r[x];if(k!=='.'&&pal[k])put(ox+x,oy+y,pal[k]);}});
+  const L=look||{},sk=LOOK.skin[L.skin|0]||LOOK.skin[0],hr=LOOK.hair[L.hair|0]||LOOK.hair[0],sh=LOOK.shirt[L.shirt|0]||LOOK.shirt[0];
+  const weapon=()=>{const [w,m]=eq.bron.split('_'),rows=WROWS[w],pal=wPal(m),gp=GRIP[w]||[4,12],dx=Math.round(gp[0]-14),dy=Math.round(14-gp[1]);
+    rows.forEach((r,sy)=>{for(let sx=0;sx<16;sx++){const k=r[sx];if(k!=='.'&&pal[k])put(15-sx+dx,sy+dy,pal[k]);}});};
+  const front=eq.bron&&/^luk_/.test(eq.bron);
+  if(eq.bron&&!front)weapon();
+  stamp(HERO,{o:'#2E2A24',h:hr[0],H:hr[1],s:sk[0],S:sk[1],k:'#2E2A24',c:'#F29A8E',m:'#B5524A',t:sh[0],T:sh[1],b:'#4A2E18',p:'#3D4A6B',P:'#2C3650',f:'#6B4523'},0,0);
+  for(const s of ['buty','zbroja','helm'])if(eq[s]){const o=HERO_ON[s];stamp(o.rows,aPal(eq[s]),o.x,o.y);}
+  if(front)weapon();
+  if(eq.tarcza){const o=HERO_ON.tarcza;stamp(o.rows,aPal(eq.tarcza),o.x,o.y);}
+  return g;}
+function heroSvg(eq,look){const g=heroGrid(eq,look);let x0=HW,x1=0;
+  for(let y=0;y<HH;y++)for(let x=0;x<HW;x++)if(g[y][x]){if(x<x0)x0=x;if(x>x1)x1=x;}
+  let r='';for(let y=0;y<HH;y++){let x=x0;while(x<=x1){const c=g[y][x];let n=1;while(x+n<=x1&&g[y][x+n]===c)n++;if(c)r+='<rect x="'+(x-x0)+'" y="'+y+'" width="'+n+'" height="1" fill="'+c+'"/>';x+=n;}}
+  return {w:x1-x0+1,svg:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+(x1-x0+1)+' '+HH+'" shape-rendering="crispEdges">'+r+'</svg>'};}
+function heroEl(scale,cls,eq,look){const s=heroSvg(eq||heroEq(),look||(st.hero&&st.hero.look)||{}),el=document.createElement('span');
+  el.className='pix hero'+(cls?' '+cls:'');el.setAttribute('aria-hidden','true');el.style.width=(s.w*scale)+'px';el.style.height=(HH*scale)+'px';el.innerHTML=s.svg;return el;}
+const CHEST=['.oooooooooo.','oBBBBBBBBBBo','oBbbbbbbbbBo','oooooyyooooo','oBbbbyybbbBo','oBbbbbbbbbBo','oBBBBBBBBBBo','oooooooooooo'];
+const CHEST_P={o:'#2E2A24',B:'#6B4523',b:'#9B6A3C',y:'#F2C230'};
 const MEDAL_ROWS=['.oooooooo.','.orrrbbbo.','.orrrbbbo.','..orrbbo..','..orrbbo..','...oooo...','..oMMMMo..','.oMLLMMDo.','.oMLMMMDo.','.oMMMMDDo.','.oMMMDDDo.','..oMDDDo..','...oooo...'];
 const TIER={b:{name:'brązowy',M:'#CD7F32',L:'#F0B27A',D:'#8C5523'},s:{name:'srebrny',M:'#C9CED6',L:'#FFFFFF',D:'#8E959F'},g:{name:'złoty',M:'#F2C230',L:'#FFF3A6',D:'#C08A12'}};
 const medalPal=(md)=>({o:'#2E2A24',r:md.rib[0],b:md.rib[1],M:TIER[md.tier].M,L:TIER[md.tier].L,D:TIER[md.tier].D});
@@ -655,6 +781,7 @@ const MEDALS=[
  {id:'a50',name:'Pełny album',desc:'Wszystkie 50 stworków.',tier:'g',rib:RIB.alb,test:()=>albumCount()>=50},
  {id:'f1',name:'Kowal',desc:'Wykuj pierwsze trofeum.',tier:'b',rib:RIB.forg,test:()=>trophyCount()>=1},
  {id:'f6',name:'Zbrojmistrz',desc:'Wykuj 6 trofeów.',tier:'s',rib:RIB.forg,test:()=>trophyCount()>=6},
+ {id:'knight',name:'Rycerz',desc:'Załóż bohaterowi hełm, zbroję, tarczę i buty.',tier:'s',rib:RIB.forg,test:()=>{const e=heroEq();return !!(e.helm&&e.zbroja&&e.tarcza&&e.buty);}},
  {id:'fdia',name:'Diamentowy kowal',desc:'Wykuj trofeum z diamentu.',tier:'g',rib:RIB.forg,test:()=>Object.keys(st.trophies).some(k=>/_diament$/.test(k))},
  {id:'m30',name:'Górnik',desc:'Zbierz razem 30 kruszców.',tier:'b',rib:RIB.mine,test:()=>st.stats.mined>=30},
  {id:'m100',name:'Mistrz górnik',desc:'Zbierz razem 100 kruszców.',tier:'s',rib:RIB.mine,test:()=>st.stats.mined>=100}];
@@ -674,7 +801,7 @@ function nextMileText(){if(Object.keys(st.clips).length>=CLIPS.length)return 'Ma
   return parts.length?'Następny nowy filmik: '+parts.join(' albo ')+'.':'';}
 const comboMin=n=>n>=7?'diament':n>=5?'zloto':n>=3?'zelazo':'miedz';
 function addMin(k,n){st.min[k]=(st.min[k]||0)+n;st.stats.mined=(st.stats.mined||0)+n;if(S&&S.loot)S.loot[k]=(S.loot[k]||0)+n;}
-function canForgeAny(){return WEAPONS.some(w=>MINS.some(m=>!st.trophies[w.id+'_'+m]&&(st.min[m]||0)>=tCost(w,m)));}
+function canForgeAny(){return ITEMS.some(w=>MINS.some(m=>!st.trophies[w.id+'_'+m]&&(st.min[m]||0)>=tCost(w,m)));}
 const CLAP=['oooooooooo','owkwkwkwko','oooooooooo','okkkkkkkko','okwwwwwwko','okkkkkkkko','okwwwwwwko','okkkkkkkko','oooooooooo'],CLAP_P={o:'#2E2A24',k:'#3B4250',w:'#FFFFFF'};
 
 /* ---------- reward clips: small canvas cartoons, 15 s each ---------- */
@@ -687,7 +814,7 @@ function sprC(key,rows,pal){if(SPR[key])return SPR[key];const w=rows[0].length,h
   rows.forEach((r,y)=>{for(let x=0;x<w;x++){const k=r[x];if(pal[k]){c.fillStyle=pal[k];c.fillRect(x,y,1,1);}}});SPR[key]=cv;return cv;}
 const creC=i=>sprC('c'+i,ALL[i].rows,ALL[i].pal);
 const minC=k=>sprC('m'+k,MIN[k].rows,MIN[k].pal);
-const troC=(w,m)=>sprC('t'+w+m,WROWS[w],wPal(m));
+const troC=(w,m)=>sprC('t'+w+m,IROWS[w],iPal(w,m));
 const PROPS={
  banana:{rows:['..........oo','yy.......yYo','.yYy...yyYy.','..yYYYYYyy..','...yyyyy....'],pal:{y:'#F2C230',Y:'#FFE27A',o:'#6B4A00'}},
  balloon:{rows:['..ooo..','.orrro.','orRrrro','orRrrro','orrrrro','.orrro.','..ooo..','...o...','....o..','...o...','....o..'],pal:{o:'#2E2A24',r:'#E5484D',R:'#FF9A9A'}},
@@ -1130,7 +1257,7 @@ function drawForge(c,t,wid,mat,smith,k){
     H.spr(troC(wid,mat),ax,92+8*s+(t>R+1?Math.sin(t*2.2)*3:0),{s,rot:Math.sin(t*1.6)*.08});
     for(let i=0;i<5;i++)H.sparkle(ax+Math.cos(t*1.2+i*1.26)*70,92+Math.sin(t*1.2+i*1.26)*44,t+i);
     if(t>=R+.7){c.save();c.globalAlpha=Math.min(1,(t-R-.7)*3);c.font='700 20px "Pixelify Sans", Andika, monospace';c.textAlign='center';c.textBaseline='middle';
-      c.lineWidth=5;c.strokeStyle='#14110D';const name=tName(WEAPONS.find(x=>x.id===wid),mat)+'!';c.strokeText(name,ax,CH-16);c.fillStyle=M.L;c.fillText(name,ax,CH-16);c.restore();}
+      c.lineWidth=5;c.strokeStyle='#14110D';const name=tName(ITEM[wid],mat)+'!';c.strokeText(name,ax,CH-16);c.fillStyle=M.L;c.fillText(name,ax,CH-16);c.restore();}
   }
 }
 function startForgePlay(cv,wid,mat,btn,title,onShown,onEnd){
@@ -1142,27 +1269,28 @@ function startForgePlay(cv,wid,mat,btn,title,onShown,onEnd){
   const frame=(now)=>{if(PL!==pl)return;const t=(now-t0)/1000;
     for(const [ct,kind] of cues)if(ct>last&&ct<=t)sfx(kind);last=t;
     drawForge(c,t,wid,mat,smith,k);
-    if(!shown&&t>=FORGE_RV+1){shown=true;btn.textContent='Dalej';title.textContent='Nowe trofeum: '+tName(WEAPONS.find(x=>x.id===wid),mat);if(onShown)onShown();}
+    if(!shown&&t>=FORGE_RV+1){shown=true;btn.textContent='Dalej';title.textContent=(ITEM[wid].kind==='armor'?'Nowy ekwipunek: ':'Nowe trofeum: ')+tName(ITEM[wid],mat);if(onShown)onShown();}
     if(!ended&&t>=FORGE_END){ended=true;if(onEnd){onEnd();return;}}
     pl.raf=requestAnimationFrame(frame);};
   pl.raf=requestAnimationFrame(frame);
 }
-function showForgeAnim(w,mat,medals,onDone){
+function showForgeAnim(w,mat,medals,onDone,worn){
   closeOverlay();
   let closed=false;const finish=()=>{if(closed)return;closed=true;closeOverlay();if(onDone)onDone();};
   const cv=h('canvas',{class:'clip-cv',role:'img','aria-label':'Wykuwanie: '+tName(w,mat)}),title=h('p',{class:'clip-title'},'Kuźnia: wykuwanie…');
   const btn=h('button',{class:'btn primary big ovl-next',type:'button',onclick:finish},'Pomiń');
   const extra=h('div',{class:'rw',hidden:true},h('p',{class:'label'},medals.length>1?'Nowe medale!':'Nowy medal!'),medals.map(rwItem));
-  const ov=h('div',{class:'ovl',role:'dialog','aria-modal':'true','aria-label':'Kuźnia'},h('div',{class:'card ovl-card'},title,cv,medals.length?extra:null,btn));
+  const wornEl=worn?h('p',{class:'worn',hidden:true},heroEl(2),'Bohater już to nosi! Zobacz w panelu „Bohater”.'):null;
+  const ov=h('div',{class:'ovl',role:'dialog','aria-modal':'true','aria-label':'Kuźnia'},h('div',{class:'card ovl-card'},title,cv,wornEl,medals.length?extra:null,btn));
   ov.addEventListener('keydown',e=>{if(e.key==='Escape')finish();});
   document.body.append(ov);OV=ov;try{btn.focus({preventScroll:true});}catch(e){}
-  requestAnimationFrame(()=>startForgePlay(cv,w.id,mat,btn,title,()=>{extra.hidden=false;},medals.length?null:finish));
+  requestAnimationFrame(()=>startForgePlay(cv,w.id,mat,btn,title,()=>{extra.hidden=false;if(wornEl)wornEl.hidden=false;},medals.length?null:finish));
 }
 /* ---------- end rewards engine ---------- */
 
 /* ---------- state ---------- */
 function fresh(){return {v:1,name:'Kuba',tts:true,size:10,unlockAll:false,voice:'Samantha',rate:0.7,gems:0,cards:{},seenLv:{},album:{},sessions:[],streak:{last:'',n:0},updated:0,sound:true,
-  min:{miedz:0,zelazo:0,zloto:0,szmaragd:0,ametyst:0,diament:0},medals:{},trophies:{},clips:{},mile:{},lastClip:-1,stats:{sessions:0,perfect:0,bestCombo:0,letters:0,mined:0},pin:null};}
+  min:{miedz:0,zelazo:0,zloto:0,szmaragd:0,ametyst:0,diament:0},medals:{},trophies:{},clips:{},mile:{},lastClip:-1,hero:{eq:{},look:{skin:0,hair:0,shirt:0}},stats:{sessions:0,perfect:0,bestCombo:0,letters:0,mined:0},pin:null};}
 function merge(o){const f=fresh();if(!o||typeof o!=='object')return f;const r=Object.assign(f,o);
   r.cards=Object.assign({},o.cards||{});r.seenLv=Object.assign({},o.seenLv||{});r.album=Object.assign({},o.album||{});
   const legacy=o.min?0:(o.gems||0),ss=Array.isArray(o.sessions)?o.sessions:[];
@@ -1170,6 +1298,7 @@ function merge(o){const f=fresh();if(!o||typeof o!=='object')return f;const r=Ob
   r.medals=Object.assign({},o.medals||{});r.trophies=Object.assign({},o.trophies||{});r.clips=Object.assign({},o.clips||{});
   r.stats=Object.assign({sessions:ss.length,perfect:ss.filter(s=>s.n>=6&&s.f===s.n).length,bestCombo:0,letters:0,mined:legacy},o.stats||{});
   r.sessions=Array.isArray(o.sessions)?o.sessions.slice(-40):[];r.streak=Object.assign({last:'',n:0},o.streak||{});
+  const oh=(o.hero&&typeof o.hero==='object')?o.hero:{};r.hero={eq:Object.assign({},oh.eq||{}),look:Object.assign({skin:0,hair:0,shirt:0},oh.look||{})};
   if(o.mile&&typeof o.mile==='object')r.mile=Object.assign({},o.mile);
   else{r.mile={};for(const m of MILES)if(m.n?(r.stats.sessions||0)>=m.n:r.medals['p'+m.l])r.mile[m.id]=1;
     const need=Math.min(Object.keys(r.mile).length,CLIPS.length);for(let i=0;i<CLIPS.length&&Object.keys(r.clips).length<need;i++)if(!r.clips[i])r.clips[i]=Date.now();}
@@ -1213,18 +1342,21 @@ const J=(id,s,a,fix,time,pl,x)=>({id,t:'judge',s,a,fix,time,pl,x});
 const B=(id,a,d,time,pl,hh,x)=>({id,t:'build',a:a.split(' '),d:d?d.split(' '):[],time,pl,h:hh,x});
 const SP=(id,s,o,a,time,pl,hh,x,cue)=>({id,t:'spell',s,o,a,time,pl,h:hh,x,cue});
 const LT=(id,s,word,time,pl,hh,x)=>({id,t:'letters',s,a:word.split(''),d:[],time,pl,h:hh,x});
+const MT=(id,pairs,time,q,hh,x)=>({id,t:'match',p:pairs,time,q,h:hh,x,pl:''});
 
 const BANK={
 1:[
  W('1w1','_ is my brother.',['Tom','Tom and Ben'],'Tom','now','Tom jest moim bratem.','is znaczy „jest”. Pasuje jedna osoba czy dwie?','is → jedna osoba. Dwie osoby (Tom and Ben) → are.'),
  W('1w2','_ are at school.',['We','She'],'We','now','Jesteśmy w szkole.','are znaczy „są”, „jesteśmy”, „jesteś”. Kto tu pasuje?','are → you, we, they. She → is.'),
  bp('1p2','She _ my sister.','s','Ona jest moją siostrą.','now'),
+ MT('1m1',[['I','am'],['she','is'],['they','are'],['it','is']],'now','Połącz osobę z am, is albo are.','Pamiętaj: I → am. Jedna osoba albo rzecz (he, she, it) → is. You, we, they → are.','I → am · he, she, it → is · you, we, they → are.'),
  bp('1p3','We _ in the classroom.','p','Jesteśmy w klasie.','now'),
  SP('1s1','I _ at home.',['am','ma','em'],'am','now','Jestem w domu.','Powiedz na głos „am”. Najpierw słychać a, potem m.','am = a + m.'),
  LT('1l1','I _ eight.','am','now','Mam osiem lat.','Powiedz powoli: a… m. Która literka jest pierwsza?','am = a + m.'),
  J('1j3','We are in the park.',true,'','now','Jesteśmy w parku.','We → are. Dobrze!'),
  W('1w3','_ am ready.',['I','He'],'I','now','Jestem gotowy.','am pasuje tylko do jednego słowa.','am → tylko I.'),
  bp('1p1','I _ eight years old.','I','Mam osiem lat.','now',{h:'Po angielsku wiek się „jest”, a nie „ma”. „Ja jestem” → I …?',x:'I → am. Wiek: I am eight (years old).'}),
+ MT('1m2',[['you','are'],['he','is'],['I','am'],['we','are']],'now','Połącz osobę z am, is albo are.','I → am. He → is. You i we → are.','I → am · he, she, it → is · you, we, they → are.'),
  B('1b1','I am eight years old','have','now','Mam osiem lat.','Po angielsku mówimy „jestem osiem lat”. Bez „have”!','Wiek: I am eight years old.'),
  bp('1p5','They _ hungry.','p','Oni są głodni.','now'),
  SP('1s2','She _ my friend.',['is','si','iz'],'is','now','Ona jest moją przyjaciółką.','Powiedz na głos „is”. Najpierw i, potem s.','is = i + s.'),
@@ -1234,6 +1366,7 @@ const BANK={
  bp('1p7','{name} _ at home.','s','{name} jest w domu.','now',{h:'{name} to jedna osoba, jak „on” albo „ona”. Które słowo znaczy „jest”?'}),
  bp('1p4','It _ cold today.','s','Dzisiaj jest zimno.','now',{x:'Po polsku „jest zimno”. Po angielsku dodajemy „it”: It is cold.'}),
  B('1b4','It is cold','are','now','Jest zimno.','Zdanie o pogodzie zaczyna się od „It”.','Pogoda: It is cold.'),
+ MT('1m3',[['my mum','is'],['Tom and Ola','are'],['the dog','is'],['the cats','are']],'now','Połącz z is albo are.','Jedna osoba albo jedno zwierzę → is. Dwie osoby albo więcej zwierząt → are.','Jedna → is · dwie lub więcej → are.'),
  J('1j2','She are my friend.',false,'She is my friend.','now','Ona jest moją przyjaciółką.','She → is.'),
  W('1w5','_ are funny.',['They','It'],'They','now','Oni są zabawni.','are znaczy „są”. Kto „są”?','They → are. It → is.'),
  bp('1p6','You _ my best friend.','p','Jesteś moim najlepszym przyjacielem.','now',{h:'Po polsku „ty jesteś”. Po angielsku „you” lubi to samo słowo co „we” i „they”.'}),
@@ -1251,12 +1384,14 @@ const BANK={
  P('2p1','She _ tired.',["isn't","aren't",'am not'],"isn't",'now','Ona nie jest zmęczona.','She → is. Teraz dodaj „not”.',"She is not = She isn't.",'nie'),
  P('2p4','_ he your brother?',['Is','Are','Am'],'Is','now','Czy on jest twoim bratem?','He → is. W pytaniu to słowo idzie na początek.','He is → Is he…?'),
  J('2j2',"He isn't at home.",true,'','now','Nie ma go w domu.',"isn't = is not. Dobrze!"),
+ MT('2m1',[['I','am not'],['he',"isn't"],['we',"aren't"],['it',"isn't"]],'now','Połącz osobę z właściwym „nie”.',"I → am not. He, she, it → isn't. You, we, they → aren't.","I am not · he isn't · we aren't · it isn't."),
  P('2p2','They _ hungry.',["isn't","aren't",'am not'],"aren't",'now','Oni nie są głodni.','They → are. Teraz dodaj „not”.',"They are not = They aren't.",'nie'),
  P('2p5','_ you ready?',['Are','Is','Am'],'Are','now','Czy jesteś gotowy?','You → are. W pytaniu idzie na początek.','You are → Are you…?'),
  B('2b2','We are not at school','is','now','Nie jesteśmy w szkole.','We are… a „not” idzie zaraz po are.',"We are not = We aren't."),
  J('2j1','Is she your teacher?',true,'','now','Czy ona jest twoją nauczycielką?','She is → Is she…? Dobrze!'),
  SP('2s1','She _ sad.',["isn't","isnt'","is'nt"],"isn't",'now','Ona nie jest smutna.','Apostrof stoi tam, gdzie zniknęło o ze słowa „not”.',"isn't = is + n't. Apostrof zamiast o.",'nie'),
  P('2p3','I _ sad.',['am not',"isn't","aren't"],'am not','now','Nie jestem smutny.','I → am. Dodaj „not” po am.',"I am not (krócej: I'm not).",'nie'),
+ MT('2m2',[['you',"aren't"],['she',"isn't"],['I','am not'],['they',"aren't"]],'now','Połącz osobę z właściwym „nie”.',"isn't to is not, aren't to are not. Przy I zawsze am not.","I am not · she isn't · you, they aren't."),
  P('2p6','_ I late?',['Am','Is','Are'],'Am','now','Czy jestem spóźniony?','I → am. W pytaniu zamieniamy kolejność.','I am → Am I…?'),
  J('2j3','Are he your dad?',false,'Is he your dad?','now','Czy on jest twoim tatą?','He → is, więc pytanie: Is he…?'),
  SP('2s2','We _ at home.',["aren't","are'nt","arent'"],"aren't",'now','Nie ma nas w domu.','Apostrof stoi tam, gdzie zniknęło o ze słowa „not”.',"aren't = are + n't. Apostrof zamiast o.",'nie'),
@@ -1268,12 +1403,14 @@ const BANK={
  N('3n1','They were in the garden.','past','Byli w ogrodzie.','were → przeszłość (wczoraj).'),
  bp('3p1','Yesterday I _ at home.','I','Wczoraj byłem (byłam) w domu.','past'),
  W('3w1','_ were at the cinema.',['We','He'],'We','past','Byliśmy w kinie.','were pasuje do kilku osób i do you, we, they.','were → you, we, they. He → was.'),
+ MT('3m1',[['I','was'],['they','were'],['she','was'],['we','were']],'past','Połącz osobę z was albo were.','I, he, she, it → was. You, we, they → were.','I, he, she, it → was · you, we, they → were.'),
  bp('3p2','We _ at the zoo.','p','Byliśmy w zoo.','past'),
  SP('3s1','I _ at the park.',['was','wos','wsa'],'was','past','Byłem (byłam) w parku.','Słychać „łoz”, ale piszemy przez a i s.','was = w + a + s.'),
  LT('3l2','It _ sunny.','was','past','Było słonecznie.','Zacznij od w. Słychać z, ale piszemy s.','was = w + a + s.'),
  N('3n2','She is in the garden.','now','Ona jest w ogrodzie.','is → teraz.'),
  J('3j2','It was rainy yesterday.',true,'','past','Wczoraj padało.','It → was. Dobrze!'),
  bp('3p3','She _ sick last week.','s','W zeszłym tygodniu była chora.','past'),
+ MT('3m2',[['you','were'],['it','was'],['he','was'],['my friends','were']],'past','Połącz osobę z was albo were.','Jedna osoba (he, it) → was. You i kilka osób → were.','he, it → was · you, my friends → were.'),
  B('3b1','They were at the beach','was','past','Byli na plaży.','They to kilka osób: was czy were?','They → were.'),
  N('3n3','I was hungry.','past','Byłem (byłam) głodny.','was → przeszłość.'),
  bp('3p4','They _ tired after school.','p','Byli zmęczeni po szkole.','past'),
@@ -1309,12 +1446,14 @@ const BANK={
  N('5n1','{name} was at the dentist.','past','{name} był(a) u dentysty.','was → przeszłość.'),
  P('5p1','Yesterday we _ at the zoo.',['are','were','will be'],'were','past','Wczoraj byliśmy w zoo.','Yesterday znaczy „wczoraj”. A „we” to kilka osób.','wczoraj + we → were.'),
  P('5p2','Now we _ at home.',['are','were','will be'],'are','now','Teraz jesteśmy w domu.','Now znaczy „teraz”.','teraz + we → are.'),
+ MT('5m1',[['Yesterday it','was'],['Now it','is'],['Tomorrow it','will be'],['Last week it','was']],null,'Połącz czas z właściwą formą.','Yesterday, last week → was. Now → is. Tomorrow → will be.','yesterday → was · now → is · tomorrow → will be.'),
  J('5j1','Yesterday I am at school.',false,'Yesterday I was at school.','past','Wczoraj byłem (byłam) w szkole.','Yesterday → przeszłość → was.'),
  N('5n2','{name} will be at the dentist.','future','{name} będzie u dentysty.','will be → przyszłość.'),
  P('5p3','Tomorrow we _ at school.',['are','were','will be'],'will be','future','Jutro będziemy w szkole.','Tomorrow znaczy „jutro”.','jutro → will be.'),
  B('5b1','Yesterday we were at the park','are','past','Wczoraj byliśmy w parku.','Zacznij od „Yesterday”. Wczoraj → was czy were?','wczoraj + we → were.'),
  P('5p4','Last summer I _ in Spain.',['was','am','will be'],'was','past','Zeszłego lata byłem (byłam) w Hiszpanii.','Last summer znaczy „zeszłego lata”. To już było.','przeszłość + I → was.'),
  N('5n3','{name} is at the dentist.','now','{name} jest u dentysty.','is → teraz.'),
+ MT('5m2',[['Last summer we','were'],['Now we','are'],['Next week we','will be'],['Yesterday I','was']],null,'Połącz czas z właściwą formą.','Przeszłość → was / were. Teraz → am / is / are. Przyszłość → will be.','last summer → were · now → are · next week → will be.'),
  J('5j2','Tomorrow they were at home.',false,'Tomorrow they will be at home.','future','Jutro będą w domu.','Tomorrow → przyszłość → will be.'),
  P('5p5','Look! The baby _ asleep.',['is','was','will be'],'is','now','Patrz! Dziecko śpi.','Look! znaczy „patrz!”. To dzieje się teraz.','teraz + jedno dziecko → is.'),
  P('5p6','Next year he _ eleven.',['will be','is','was'],'will be','future','W przyszłym roku będzie miał jedenaście lat.','Next year znaczy „w przyszłym roku”.','przyszłość → will be.'),
@@ -1326,12 +1465,14 @@ const BANK={
  P('6p2','I _ pizza.',['like','likes','am like'],'like','usual','Lubię pizzę.','Przy „I” nie dodajemy -s ani am.','I like. Bez „am”!'),
  W('6w1','_ reads books every evening.',['Ola','We'],'Ola','usual','Ola czyta książki co wieczór.','reads ma na końcu -s. Jedna osoba czy kilka?','-s → he, she, it (Ola). We read.'),
  J('6j1','I am play football.',false,'I play football.','usual','Gram w piłkę.','Gdy jest czasownik (play), nie dodajemy am, is, are.'),
+ MT('6m1',[['I','play'],['she','plays'],['they','play'],['my dad','plays']],'usual','Połącz osobę z play albo plays.','He, she, it (jedna osoba) → plays z -s. I, you, we, they → play.','she, my dad → plays · I, they → play.'),
  P('6p1','She _ football every day.',['plays','play','is play'],'plays','usual','Ona codziennie gra w piłkę.','She to „ona”. Do czasownika dodajemy -s.','he, she, it → plays.'),
  B('6b2','I like apples','am','usual','Lubię jabłka.','„Lubię” to I like. Nie potrzeba „am”.','Bez „am”: I like.'),
  P('6p3','My dad _ to work by bus.',['goes','go','is go'],'goes','usual','Tata jeździ do pracy autobusem.','My dad to „on”. Do „go” dodajemy -es.','he → goes.'),
  J('6j2','She is likes cats.',false,'She likes cats.','usual','Ona lubi koty.','likes wystarczy. Bez „is”.'),
  W('6w2','_ get up at seven.',['I','He'],'I','usual','Wstaję o siódmej.','get nie ma -s.','I get up. He gets up.'),
  P('6p4','We _ in Poland.',['live','lives','are live'],'live','usual','Mieszkamy w Polsce.','We: bez -s i bez are.','we live.'),
+ MT('6m2',[['you','like'],['it','likes'],['we','like'],['Ola','likes']],'usual','Połącz osobę z like albo likes.','Jedna osoba albo rzecz (Ola, it) → likes z -s. You, we → like.','it, Ola → likes · you, we → like.'),
  B('6b1','She plays the piano','is','usual','Ona gra na pianinie.','Bez „is”: „plays” to już całe „gra”.','she plays, bez „is”.'),
  J('6j3','He watches TV every day.',true,'','usual','On codziennie ogląda telewizję.','he → watches. Dobrze!'),
  P('6p5','The cat _ milk.',['drinks','drink','is drink'],'drinks','usual','Kot pije mleko.','The cat to „ono”. Dodaj -s.','it → drinks.'),
@@ -1342,12 +1483,14 @@ const BANK={
  N('7n1','He walked to school.','past','Poszedł do szkoły pieszo.','-ed → przeszłość.'),
  P('7p1','Yesterday I _ football.',['played','play','will play'],'played','past','Wczoraj grałem (grałam) w piłkę.','Yesterday → przeszłość. Szukaj -ed.','play → played.'),
  J('7j1','Yesterday I was play football.',false,'Yesterday I played football.','past','Wczoraj grałem (grałam) w piłkę.','Bez „was”: played już mówi, że to było.'),
+ MT('7m1',[['go','went'],['eat','ate'],['see','saw'],['have','had']],'past','Połącz czasownik z jego formą z przeszłości.','Te czasowniki są nieregularne: mają swoje własne formy w przeszłości.','go → went · eat → ate · see → saw · have → had.'),
  P('7p2','Last week we _ to the zoo.',['went','go','will go'],'went','past','W zeszłym tygodniu poszliśmy do zoo.','go jest nieregularne. W przeszłości wygląda całkiem inaczej.','go → went.'),
  N('7n2','He walks to school.','usual','Chodzi do szkoły pieszo.','walks → zwykle, codziennie.'),
  B('7b1','We went to the cinema','was','past','Poszliśmy do kina.','„Poszliśmy” to went. Bez was.','go → went.'),
  P('7p3','Yesterday she _ a big ice cream.',['ate','eats','will eat'],'ate','past','Wczoraj zjadła wielkie lody.','eat w przeszłości to zupełnie nowe słowo.','eat → ate.'),
  J('7j2','We goed to the park.',false,'We went to the park.','past','Poszliśmy do parku.','go → went (nie „goed”).'),
  P('7p4','They _ a cartoon last night.',['watched','watch','will watch'],'watched','past','Wczoraj wieczorem oglądali bajkę.','last night znaczy „wczoraj wieczorem”.','watch → watched.'),
+ MT('7m2',[['play','played'],['watch','watched'],['clean','cleaned'],['walk','walked']],'past','Połącz czasownik z jego formą z przeszłości.','Zwykłe czasowniki w przeszłości dostają -ed.','play → played · watch → watched · clean → cleaned · walk → walked.'),
  N('7n3','He will walk to school.','future','Pójdzie do szkoły pieszo.','will → przyszłość.'),
  P('7p5','I _ a dog in the park yesterday.',['saw','see','will see'],'saw','past','Wczoraj widziałem (widziałam) psa w parku.','see jest nieregularne.','see → saw.'),
  B('7b2','I played with my dog','was','past','Bawiłem (bawiłam) się z moim psem.','„Bawiłem się” to played.','play → played, bez was.'),
@@ -1358,6 +1501,7 @@ const BANK={
  N('8n1','They will play outside.','future','Będą się bawić na dworze.','will → przyszłość.'),
  P('8p1','Tomorrow I _ my grandma.',['will visit','visited','visit'],'will visit','future','Jutro odwiedzę babcię.','Tomorrow → przyszłość.','jutro → will visit.'),
  J('8j1','I will plays tennis.',false,'I will play tennis.','future','Zagram w tenisa.','Po will czasownik bez -s.'),
+ MT('8m1',[['Yesterday I','played'],['Every day I','play'],['Tomorrow I','will play'],['Last week I','played']],null,'Połącz czas z właściwą formą.','Yesterday, last week → played. Every day → play. Tomorrow → will play.','yesterday → played · every day → play · tomorrow → will play.'),
  P('8p2','Next week we _ a test.',['will have','had','have'],'will have','future','W przyszłym tygodniu będziemy mieć sprawdzian.','Next week znaczy „w przyszłym tygodniu”.','przyszłość → will have.'),
  N('8n2','They played outside.','past','Bawili się na dworze.','-ed → przeszłość.'),
  B('8b1','I will help you','am','future','Pomogę ci.','„Pomogę” to will help.','will + help.'),
@@ -1407,7 +1551,7 @@ const INTRO={
     rows:[['play','will play','zagram, zagramy'],['go','will go','pójdę, pójdziemy'],['she will plays ✗','she will play ✓','po will bez -s']],
     ex:['I will visit Grandma.','We will go swimming.']}};
 const TIME={past:{lab:'wczoraj',long:'Wczoraj (było)'},now:{lab:'teraz',long:'Teraz (jest)'},usual:{lab:'zwykle',long:'Zwykle (codziennie)'},future:{lab:'jutro',long:'Jutro (będzie)'}};
-const INSTR={who:'Kto pasuje do zdania?',when:'Kiedy to się dzieje?',pick:'Wybierz brakujące słowo.',judge:'To zdanie jest dobrze czy źle?',build:'Ułóż to zdanie po angielsku.',spell:'Które słowo jest napisane dobrze?',letters:'Ułóż słowo z literek.'};
+const INSTR={match:'Połącz w pary.',who:'Kto pasuje do zdania?',when:'Kiedy to się dzieje?',pick:'Wybierz brakujące słowo.',judge:'To zdanie jest dobrze czy źle?',build:'Ułóż to zdanie po angielsku.',spell:'Które słowo jest napisane dobrze?',letters:'Ułóż słowo z literek.'};
 const WHEN_H={be:'Tu nie ma „yesterday” ani „tomorrow”. Czas widać po czasowniku: was/were, am/is/are czy will be?',verb:'Popatrz na czasownik: ma końcówkę -ed albo nową formę? Ma -s? A może stoi przed nim will?'};
 const PRAISE=['Super!','Brawo!','Świetnie!','Tak jest!','Ekstra!','Mistrz!'];
 
@@ -1430,11 +1574,14 @@ function buildSession(only){
   const dueTake=Math.min(due.length,N-newTake);
   let pick=due.slice(0,dueTake).map(c=>({c,mode:'due'})).concat(fr.slice(0,newTake).map(c=>({c,mode:'new'})));
   if(pick.length<N){shuffle(rest).sort((a,b)=>st.cards[a.id].b-st.cards[b.id].b);pick=pick.concat(rest.slice(0,N-pick.length).map(c=>({c,mode:'practice'})));}
-  const stage={who:0,when:0,spell:1,pick:1,letters:2,judge:2,build:3};
+  const stage={who:0,when:0,match:1,spell:1,pick:1,letters:2,judge:2,build:3};
   pick=shuffle(pick).sort((x,y)=>stage[x.c.t]-stage[y.c.t]);
   return pick.map(p=>newItem(p.c,p.mode));
 }
+const pairsText=(c,sep)=>c.p.map(p=>fill(p[0])+' '+fill(p[1])).join(sep);
+function sayText(c){return c.t==='match'?pairsText(c,', ')+'.':fullSentence(c);}
 function fullSentence(c){
+  if(c.t==='match')return pairsText(c,' · ');
   if(c.t==='who'||c.t==='pick'||c.t==='spell')return fill(c.s).replace('_',fill(c.a));
   if(c.t==='letters')return fill(c.s).replace('_',c.a.join(''));
   if(c.t==='judge')return c.a?fill(c.s):fill(c.fix);
@@ -1442,6 +1589,7 @@ function fullSentence(c){
   return fill(c.s);
 }
 function sayNow(c,it){
+  if(c.t==='match')return '';
   if(it.state==='done'||c.t==='spell'||c.t==='letters')return fullSentence(c);
   if(c.t==='who'||c.t==='pick')return fill(c.s).replace('_',' … ');
   if(c.t==='build')return '';
@@ -1480,7 +1628,7 @@ async function initStore(){
 /* ---------- screens ---------- */
 function go(n,keepScroll){cur=n;for(const s of SCR)document.getElementById('scr-'+s).hidden=s!==n;
   if(n==='home')renderHome();else if(n==='lesson')renderLesson();else if(n==='parent')renderParent();else if(n==='sheet')renderSheet();else if(n==='album')renderAlbum();
-  else if(n==='forge')renderForge();else if(n==='medals')renderMedals();else if(n==='kino')renderKino();
+  else if(n==='forge')renderForge();else if(n==='medals')renderMedals();else if(n==='kino')renderKino();else if(n==='hero')renderHero();
   if(n!=='kino')kinoPreview=false;
   if(n!=='parent'&&n!=='kino'){parentOK=false;gateQ=null;pinMsg='';}
   if(typeof showUpd==='function')showUpd();
@@ -1492,7 +1640,7 @@ function pickCre(l){const f=[];for(let i=0;i<ALL.length;i++)if(st.album[i])f.pus
 function wordmark(){return h('span',{class:'wm','aria-label':'Wczoraj, dziś, jutro'},pix(GRASS,GRASS_P),h('span',{class:'c-past'},'wczoraj'),h('span',{class:'sep'},'·'),h('span',{class:'c-now'},'dziś'),h('span',{class:'sep'},'·'),h('span',{class:'c-future'},'jutro'));}
 function backHeader(){return h('header',{class:'top'},h('button',{class:'ghost-btn',type:'button',onclick:()=>go('home')},'‹ Wróć'),wordmark());}
 function invStrip(){return h('div',{class:'inv',role:'list','aria-label':'Twoje kruszce'},MINS.map(k=>h('div',{class:'inv-i',role:'listitem',title:MIN[k].name},minEl(k),h('span',{class:'inv-t'},h('b',null,String(st.min[k]||0)),h('span',null,MIN[k].name)))));}
-function hubTile(title,sub,icon,fn,tag){return h('button',{class:'hub-t',type:'button',onclick:fn},icon,h('span',null,h('b',null,title),h('span',null,sub)),tag?h('span',{class:'tag-new'},tag):null);}
+function hubTile(title,sub,icon,fn,tag,cls){return h('button',{class:'hub-t'+(cls?' '+cls:''),type:'button',onclick:fn},icon,h('span',null,h('b',null,title),h('span',null,sub)),tag?h('span',{class:'tag-new'},tag):null);}
 
 function renderHome(){
   const r=$('#scr-home');r.replaceChildren();
@@ -1512,9 +1660,11 @@ function renderHome(){
   r.append(h('button',{class:'sheet-link',type:'button',onclick:()=>go('sheet')},
     h('span',null,h('b',null,'Ściągawka: to be'),h('span',null,'am, is, are, was, were, will be')),h('span',{class:'arr','aria-hidden':'true'},'›')));
   const recent=Object.keys(st.album).map(Number).filter(i=>i<ALL.length).sort((a,b)=>st.album[b]-st.album[a]);
+  const heq=Object.keys(heroEq()).length;
   r.append(h('div',{class:'hub'},
+    hubTile('Bohater',heq?'Ekwipunek: '+heq+' z 5. Zmień zbroję i broń.':'Załóż bohaterowi to, co wykujesz w kuźni.',heroEl(2),()=>go('hero'),null,'wide'),
     hubTile('Album stworków',albumCount()+' z '+ALL.length,creEl(recent.length?recent[0]:6),()=>go('album')),
-    hubTile('Kuźnia',trophyCount()+' z '+(WEAPONS.length*MINS.length)+' trofeów',trophyEl('miecz','zelazo'),()=>go('forge'),canForgeAny()?'WYKUJ!':null),
+    hubTile('Kuźnia',trophyCount()+' z '+(ITEMS.length*MINS.length)+' przedmiotów',trophyEl('miecz','zelazo'),()=>go('forge'),canForgeAny()?'WYKUJ!':null),
     hubTile('Medale',Object.keys(st.medals).length+' z '+MEDALS.length,medalEl(MEDALS[0]),()=>go('medals')),
     hubTile('Kino',Object.keys(st.clips).length+' z '+CLIPS.length+' filmików',pix(CLAP,CLAP_P),()=>go('kino'))));
   const parts=[['Część 1 · to be (być)',[1,2,3,4,5]],['Część 2 · czasowniki',[6,7,8]]];
@@ -1544,6 +1694,7 @@ function timeline(c,it){
     zones.map(z=>h('div',{class:'zone z-'+z[0]+' t-'+z[0]+(active===z[0]?' on':'')},h('span',null,z[1]))));
 }
 function sentenceEl(c,it){
+  if(c.t==='match')return null;
   const done=it.state==='done';
   if(c.t==='build')return h('p',{class:'sent pl',lang:'pl'},fill(c.pl));
   const s=fill(c.s);
@@ -1559,24 +1710,24 @@ function renderLesson(){
   const it=S.items[S.i],c=it.c;
   r.append(h('div',{class:'lbar'},
     h('button',{class:'icon-btn',type:'button','aria-label':'Zakończ lekcję',onclick:endEarly},'×'),
-    h('div',{class:'prog',role:'progressbar','aria-valuemin':'0','aria-valuemax':String(S.items.length),'aria-valuenow':String(S.i)},h('i',{style:'width:'+(S.i/S.items.length*100)+'%'})),
+    trailEl(),
     S.combo>=2?h('span',{class:'combo-chip',title:'Dobre odpowiedzi z rzędu'},'Seria '+S.combo):null,
     h('span',{class:'count'},(S.i+1)+'/'+S.items.length)));
   if(!st.seenLv[c.l]){if(meet(guideIdx(c.l)))save();r.append(introCard(c.l,()=>{st.seenLv[c.l]=true;save();renderLesson();}));return;}
   const done=it.state==='done';
   const card=h('div',{class:'card lesson-card'+(done?' is-done':'')});
-  card.append(timeline(c,it));
-  card.append(h('p',{class:'instr'},INSTR[c.t],c.cue?h('span',{class:'cue'},'zdanie z „nie”'):null));
-  card.append(sentenceEl(c,it));
+  if(c.time)card.append(timeline(c,it));
+  card.append(h('p',{class:'instr'},c.q||INSTR[c.t],c.cue?h('span',{class:'cue'},'zdanie z „nie”'):null));
+  const se=sentenceEl(c,it);if(se)card.append(se);
   const tools=h('div',{class:'tools'});
   const say=sayNow(c,it);
   if(!done){
     if(TTS.ok&&say)tools.append(h('button',{class:'chip-btn',type:'button',onclick:()=>speak(sayNow(c,it))},spk(),'Posłuchaj'));
-    if(c.t!=='build')tools.append(h('button',{class:'chip-btn',type:'button','aria-expanded':String(!!it.showPl),onclick:()=>{it.showPl=!it.showPl;renderLesson();}},it.showPl?'Ukryj tłumaczenie':'Po polsku'));
+    if(c.t!=='build'&&c.t!=='match')tools.append(h('button',{class:'chip-btn',type:'button','aria-expanded':String(!!it.showPl),onclick:()=>{it.showPl=!it.showPl;renderLesson();}},it.showPl?'Ukryj tłumaczenie':'Po polsku'));
   }
   if(tools.childNodes.length)card.append(tools);
   if(it.showPl&&!done&&c.t!=='build')card.append(h('p',{class:'pl-line',lang:'pl'},fill(c.pl)));
-  if(c.t==='build'||c.t==='letters')card.append(buildArea(c,it));else card.append(choiceArea(c,it));
+  if(c.t==='build'||c.t==='letters')card.append(buildArea(c,it));else if(c.t==='match')card.append(matchArea(c,it));else card.append(choiceArea(c,it));
   if((it.state==='hint'||done)&&it.cre==null){it.cre=pickCre(c.l);S.lastCre=it.cre;}
   const fb=feedbackEl(c,it);if(fb)card.append(fb);
   r.append(card);
@@ -1615,6 +1766,34 @@ function buildArea(c,it){
   }
   return wrap;
 }
+const PAIRC=['#F2C230','#6EC1F2','#8FE0A8','#F59BC7','#C9B3F5'];
+function matchArea(c,it){
+  const n=c.p.length;
+  if(it.state==='done')return h('div',{class:'match done',lang:'en'},c.p.map((pp,i)=>h('span',{class:'mt on',style:'--pc:'+PAIRC[i%PAIRC.length]},fill(pp[0])+' ',h('b',null,fill(pp[1])))));
+  if(!it.mt){const idx=[...Array(n).keys()];let L,R,k=0;
+    do{L=shuffle(idx.slice());R=shuffle(idx.slice());k++;}while(k<30&&n>1&&L.every((v,i)=>c.p[v][1]===c.p[R[i]][1]));
+    it.mt={L,R,sel:null,pair:{},order:[],bad:null};}
+  const m=it.mt,col=li=>PAIRC[m.order.indexOf(li)%PAIRC.length];
+  const left=m.L.map(li=>{const mp=m.pair[li]!=null,sel=!!m.sel&&m.sel.s==='L'&&m.sel.i===li,bad=!!m.bad&&m.bad[0]===li;
+    return h('button',{class:'mt'+(mp?' on':'')+(sel?' sel':'')+(bad?' bad':''),type:'button',style:mp?'--pc:'+col(li):null,disabled:mp||null,'aria-pressed':String(sel),onclick:()=>mtTap('L',li)},fill(c.p[li][0]));});
+  const right=m.R.map((pi,pos)=>{const ow=Object.keys(m.pair).find(k=>m.pair[k]===pos),mp=ow!=null,sel=!!m.sel&&m.sel.s==='R'&&m.sel.i===pos,bad=!!m.bad&&m.bad[1]===pos;
+    return h('button',{class:'mt'+(mp?' on':'')+(sel?' sel':'')+(bad?' bad':''),type:'button',style:mp?'--pc:'+col(+ow):null,disabled:mp||null,'aria-pressed':String(sel),onclick:()=>mtTap('R',pos)},fill(c.p[pi][1]));});
+  return h('div',{class:'match',lang:'en'},h('div',{class:'mcol'},left),h('div',{class:'mcol'},right));
+}
+function mtTap(side,i){
+  const it=S&&S.items[S.i];if(!it||it.state==='done'||!it.mt)return;const c=it.c,m=it.mt;
+  m.bad=null;
+  if(!m.sel||m.sel.s===side){m.sel=(m.sel&&m.sel.s===side&&m.sel.i===i)?null:{s:side,i};renderLesson();return;}
+  const li=side==='L'?i:m.sel.i,pos=side==='R'?i:m.sel.i;m.sel=null;
+  if(c.p[li][1]===c.p[m.R[pos]][1]){m.pair[li]=pos;m.order.push(li);
+    if(m.order.length===c.p.length){finish(true);return;}
+    if(st.tts)speak(fill(c.p[li][0])+' '+fill(c.p[li][1]));
+    renderLesson();return;}
+  m.bad=[li,pos];
+  if(it.tries===0){it.tries=1;it.state='hint';renderLesson();
+    setTimeout(()=>{if(S&&S.items[S.i]===it&&it.mt===m&&m.bad){m.bad=null;renderLesson();}},700);}
+  else{it.tries++;finish(false);}
+}
 function choose(v){
   const it=S.items[S.i],c=it.c;if(it.state==='done')return;
   if(v===c.a){finish(true);return;}
@@ -1644,7 +1823,7 @@ function finish(correct){
   }else if(!it.first)S.combo=0;
   it.praise=PRAISE[Math.floor(Math.random()*PRAISE.length)];
   renderLesson();
-  if(st.tts)speak(fullSentence(c));
+  if(st.tts)speak(sayText(c));
 }
 function feedbackEl(c,it){
   if(it.state==='hint'){
@@ -1664,7 +1843,8 @@ function feedbackEl(c,it){
       h('p',{class:'fb-title'},title),newCreLine(it),
       it.combo>=2?h('p',{class:'gem-gain'},h('span',{class:'combo-tag'},'Seria '+it.combo+'!')):null,
       (c.t==='judge'&&!c.a)?h('p',{class:'fb-note',style:'color:inherit'},'Poprawnie:'):null,
-      h('p',{class:'fb-sent',lang:'en'},full,TTS.ok?h('button',{type:'button','aria-label':'Posłuchaj',onclick:()=>speak(full)},spk()):null),
+      c.t==='match'?(TTS.ok?h('p',{class:'fb-sent'},h('button',{type:'button','aria-label':'Posłuchaj par',onclick:()=>speak(sayText(c))},spk())):null):
+        h('p',{class:'fb-sent',lang:'en'},full,TTS.ok?h('button',{type:'button','aria-label':'Posłuchaj',onclick:()=>speak(sayText(c))},spk()):null),
       word?h('p',{class:'spelled',lang:'en','aria-label':'Literki: '+word.split('').join(' ')},word.split('').join(' · ')):null,
       h('p',null,fill(c.x)),
       (!good&&it.requeued)?h('p',{class:'fb-note'},'To zdanie wróci jeszcze raz na końcu lekcji.'):null));
@@ -1722,7 +1902,7 @@ function finishSession(completed){
   const r=$('#scr-sum');r.replaceChildren();
   r.append(h('header',{class:'top'},wordmark()));
   r.append(h('div',{class:'card sum-card'},
-    creEl(star,'big'),
+    h('div',{class:'sum-scene'},heroEl(4,'sum-hero'),creEl(star,'big')),
     h('p',{class:'label'},caught>=0?'Nowy stworek w albumie: '+ALL[caught].name+'!':completed?'Misja ukończona · '+ALL[star].name+' gratuluje!':'Nagrody są tylko za ukończone misje'),
     h('p',{class:'sum-title'},title),
     h('div',{class:'loot','aria-label':'Za pierwszym razem: '+f+' z '+n},base.map((x,i)=>{const el=h('span',{class:x.first?'hit':'miss'});el.style.animationDelay=(i*70)+'ms';return el;})),
@@ -1769,7 +1949,7 @@ function renderSheet(){
 
 /* ---------- rewards UI ---------- */
 function rwItem(it){
-  if(it.kind==='trophy'){const w=WEAPONS.find(x=>x.id===it.w);return h('div',{class:'rw-i'},trophyEl(it.w,it.mat),h('span',null,h('b',null,'Nowe trofeum'),tName(w,it.mat)));}
+  if(it.kind==='trophy'){const w=ITEM[it.w];return h('div',{class:'rw-i'},trophyEl(it.w,it.mat),h('span',null,h('b',null,'Nowe trofeum'),tName(w,it.mat)));}
   if(it.kind==='mile')return h('div',{class:'rw-i'},pix(CLAP,CLAP_P,'clap'),h('span',null,h('b',null,'Kamień milowy · nowy filmik'),it.name));
   return h('div',{class:'rw-i'},medalEl(it),h('span',null,h('b',null,'Nowy medal · '+TIER[it.tier].name),it.name));}
 function openReward(items,idx,isNew,onClose){if(idx<0||idx>=CLIPS.length){if(onClose)onClose();return;}showOverlay(items,idx,onClose,isNew);}
@@ -1794,19 +1974,28 @@ function showOverlay(items,idx,onClose,isNew){
 function closeOverlay(){stopPlay();if(OV){OV.remove();OV=null;}if(typeof showUpd==='function')showUpd();}
 function forge(w,mat){const cost=tCost(w,mat);if((st.min[mat]||0)<cost||st.trophies[w.id+'_'+mat])return;
   st.min[mat]-=cost;st.trophies[w.id+'_'+mat]=Date.now();
+  const slot=w.kind==='armor'?w.id:'bron',worn=!heroEq()[slot];
+  if(worn){if(!st.hero)st.hero={eq:{},look:{}};if(!st.hero.eq)st.hero.eq={};st.hero.eq[slot]=w.kind==='armor'?mat:w.id+'_'+mat;}
   const md=checkMedals().map(m=>Object.assign({kind:'medal'},m));save();
-  showForgeAnim(w,mat,md,()=>{if(cur==='forge')renderForge();});}
+  showForgeAnim(w,mat,md,()=>{if(cur==='forge')renderForge();},worn);}
+let forgeTab='bron';
 function renderForge(){
   const r=$('#scr-forge');r.replaceChildren();
+  const kind=forgeTab==='zbroja'?'armor':'weapon';
+  const canK=k=>ITEMS.some(w=>w.kind===k&&MINS.some(m=>!st.trophies[w.id+'_'+m]&&(st.min[m]||0)>=tCost(w,m)));
+  const tab=(id,lab,k)=>h('button',{class:'seg'+(forgeTab===id?' on':''),type:'button','aria-pressed':String(forgeTab===id),onclick:()=>{forgeTab=id;renderForge();}},lab,canK(k)?h('span',{class:'seg-dot',title:'Możesz coś wykuć'},'!'):null);
   r.append(backHeader(),h('h1',{class:'hello'},'Kuźnia'),
-    h('p',{class:'muted'},'Wykuj trofea z kruszców. Kruszce zdobywasz za ukończone misje.'),invStrip());
+    h('p',{class:'muted'},'Wykuj broń i zbroję z kruszców. Kruszce zdobywasz za ukończone misje. Wykute rzeczy zakładasz bohaterowi.'),invStrip(),
+    h('div',{class:'segs',role:'group','aria-label':'Co wykuwasz?'},tab('bron','Broń','weapon'),tab('zbroja','Zbroja i tarcza','armor')));
+  const list=ITEMS.filter(w=>w.kind===kind);
   for(const mat of MINS){
     r.append(h('div',{class:'fsec'},h('h2',{class:'forge-h'},minEl(mat),MIN[mat].name+' · masz '+(st.min[mat]||0)),
-      h('div',{class:'fgrid'},WEAPONS.map(w=>{const got=!!st.trophies[w.id+'_'+mat],cost=tCost(w,mat),can=(st.min[mat]||0)>=cost;
+      h('div',{class:'fgrid'},list.map(w=>{const got=!!st.trophies[w.id+'_'+mat],cost=tCost(w,mat),can=(st.min[mat]||0)>=cost;
         return h('div',{class:'fcell'+(got?' got':'')},trophyEl(w.id,mat),h('span',{class:'fname'},tName(w,mat)),
-          got?h('span',{class:'fdone'},'W zbrojowni ✓'):h('span',{class:'fcost'},minEl(mat),'× '+cost),
+          got?h('span',{class:'fdone'},w.kind==='armor'?'W szafie ✓':'W zbrojowni ✓'):h('span',{class:'fcost'},minEl(mat),'× '+cost),
           got?null:h('button',{class:'btn primary',type:'button',disabled:!can||null,'aria-label':'Wykuj: '+tName(w,mat),onclick:()=>forge(w,mat)},'Wykuj'));}))));
   }
+  r.append(h('button',{class:'btn secondary',type:'button',onclick:()=>go('hero')},'Idź do bohatera'));
 }
 function renderMedals(){
   const r=$('#scr-medals');r.replaceChildren();
@@ -1829,6 +2018,54 @@ function renderKino(){
     return h('div',{class:'kcell locked'},h('div',{class:'kthumb klock','aria-hidden':'true'},'?'),h('span',null,'Odcinek '+(i+1)),h('b',null,'Zablokowany'));})));
   for(const [cv,i] of thumbs){try{drawClip(cv.getContext('2d'),i,7.5,[6,7,8,9,10],1);}catch(e){}}
 }
+
+/* ---------- hero panel ---------- */
+let heroMsg='';
+function eqName(slot,val){if(!val)return 'nic';if(slot==='bron'){const [w,m]=val.split('_');return tName(ITEM[w],m);}return tName(ITEM[slot],val);}
+function ownedWeapons(){const out=[];for(const w of WEAPONS)for(const m of MINS)if(st.trophies[w.id+'_'+m])out.push(w.id+'_'+m);return out;}
+function equip(slot,val){if(!st.hero)st.hero={eq:{},look:{}};if(!st.hero.eq)st.hero.eq={};st.hero.eq[slot]=val||null;
+  const md=checkMedals();save();heroMsg=md.length?(md.length>1?'Nowe medale: ':'Nowy medal: ')+md.map(m=>m.name).join(', ')+'!':'';renderHero();}
+function setLook(k,i){if(!st.hero.look)st.hero.look={};st.hero.look[k]=i;save();renderHero();}
+function renderHero(){
+  const r=$('#scr-hero');r.replaceChildren();const eq=heroEq(),n=Object.keys(eq).length;
+  r.append(backHeader(),h('h1',{class:'hello'},'Bohater'));
+  r.append(h('div',{class:'card hero-card'},
+    h('div',{class:'hero-stage'},heroEl(6,'hero-big')),
+    h('p',{class:'hero-name'},st.name||'Kuba'),
+    h('p',{class:'muted'},n?'Ekwipunek: '+n+' z 5. Bohater idzie z tobą na każdą misję.':'Wykuj w kuźni hełm, zbroję, tarczę, buty albo broń i załóż je tutaj. Bohater idzie z tobą na każdą misję.')));
+  if(heroMsg){r.append(h('p',{class:'bk-msg hero-msg',role:'status'},heroMsg));heroMsg='';}
+  const eqCard=h('div',{class:'card pcard'},h('h2',null,'Ekwipunek'));
+  for(const s of SLOTS){
+    const cv=eq[s.id]||null,opts=[h('button',{class:'eq-opt none'+(!cv?' on':''),type:'button','aria-pressed':String(!cv),'aria-label':s.name+': nic',title:'Zdejmij',onclick:()=>equip(s.id,null)},'—')];
+    let note=null;
+    if(s.id==='bron'){const own=ownedWeapons();
+      for(const k of own){const [w,m]=k.split('_'),nm=tName(ITEM[w],m);opts.push(h('button',{class:'eq-opt'+(cv===k?' on':''),type:'button','aria-pressed':String(cv===k),'aria-label':nm,title:nm,onclick:()=>equip('bron',k)},trophyEl(w,m)));}
+      if(!own.length)note='Broń wykujesz w kuźni.';}
+    else for(const m of MINS){const own=!!st.trophies[s.id+'_'+m],nm=tName(ITEM[s.id],m);
+      opts.push(own?h('button',{class:'eq-opt'+(cv===m?' on':''),type:'button','aria-pressed':String(cv===m),'aria-label':nm,title:nm,onclick:()=>equip(s.id,m)},trophyEl(s.id,m))
+        :h('span',{class:'eq-opt locked',title:nm+': wykuj w kuźni',role:'img','aria-label':nm+': jeszcze nie wykute'},trophyEl(s.id,m)));}
+    eqCard.append(h('div',{class:'slot'},h('div',{class:'slot-h'},h('b',null,s.name),h('span',null,eqName(s.id,cv))),h('div',{class:'slot-opts'},opts),note?h('p',{class:'muted small'},note):null));
+  }
+  r.append(eqCard);
+  const look=st.hero.look||{},sw=(k,lab,names)=>h('div',{class:'slot'},h('div',{class:'slot-h'},h('b',null,lab),h('span',null,names[look[k]|0]||'')),
+    h('div',{class:'sw-row'},LOOK[k].map((c,i)=>h('button',{class:'sw'+((look[k]|0)===i?' on':''),type:'button','aria-pressed':String((look[k]|0)===i),'aria-label':lab+': '+names[i],style:'background:'+c[0],onclick:()=>setLook(k,i)}))));
+  r.append(h('div',{class:'card pcard'},h('h2',null,'Wygląd'),
+    sw('skin','Skóra',['jasna','średnia','śniada','ciemna']),sw('hair','Włosy',['rude','blond','brązowe','czarne','fioletowe']),sw('shirt','Koszulka',['czerwona','niebieska','zielona','pomarańczowa','fioletowa'])));
+  const cf=canForgeAny();
+  r.append(h('button',{class:cf?'btn primary big':'btn secondary',type:'button',onclick:()=>go('forge')},cf?'Masz kruszce. Idź do kuźni!':'Idź do kuźni'));
+}
+/* ---------- the hero walks along the grass during a mission ---------- */
+function trailScale(){try{return matchMedia('(max-height:740px)').matches?1.375:2;}catch(e){return 2;}}
+function trailEl(){
+  const N=S.items.length,it=S.items[S.i],done=!!it&&it.state==='done',p=Math.min(1,(S.i+(done?1:0))/N);
+  const hero=heroEl(trailScale(),'trail-hero'),w=hero.style.width,at=q=>'calc((100% - '+w+' - 34px) * '+q.toFixed(4)+')';
+  const from=S.trailP==null?p:S.trailP;hero.style.left=at(from);
+  if(done&&it.correct&&!it.hop){it.hop=true;hero.classList.add('hop');}
+  else if(it&&(it.state==='hint'||(done&&!it.correct))&&!it.oops){it.oops=true;hero.classList.add('oops');}
+  if(from!==p)requestAnimationFrame(()=>requestAnimationFrame(()=>{hero.style.left=at(p);}));
+  S.trailP=p;
+  return h('div',{class:'trail',role:'progressbar','aria-label':'Bohater idzie do skrzyni','aria-valuemin':'0','aria-valuemax':String(N),'aria-valuenow':String(S.i+(done?1:0))},
+    h('i',{class:'trail-done',style:'width:'+(p*100).toFixed(2)+'%'}),pix(CHEST,CHEST_P,'trail-chest'+(p>=1?' open':'')),hero);}
 
 /* ---------- album ---------- */
 function renderAlbum(){
@@ -2005,6 +2242,8 @@ function renderParent(){
       h('li',null,'Nagrody są tylko za ukończoną misję, nie za pojedyncze odpowiedzi. Przerwana misja zapisuje postęp, ale nic nie daje. Za ukończenie: 2 miedzi; przy 70% dobrych odpowiedzi za pierwszym razem także żelazo, przy 85% złoto, za misję bez błędu (min. 6 zadań) diament. Szmaragd jest za co najmniej 3 dobrze zapamiętane stare zdania, ametyst za pierwszą misję dnia.'),
       h('li',null,'Medale za poziomy przychodzą dopiero wtedy, gdy 60% zdań poziomu trafi do pudełka 3 lub wyżej, czyli po kilku dniach powtórek.'),
       h('li',null,'W kuźni dziecko wymienia kruszce na trofea (miecze, łuki, topory, młoty, włócznie, trójzęby). Po każdej wygranej misji (co najmniej połowa odpowiedzi dobrze za pierwszym razem) ogląda 15-sekundowy filmik, zwykle jeden z już odblokowanych. Nowe filmiki odblokowuje tylko w kamieniach milowych: 1., 5., 10., 15., 20., 30., 40., 50., 60., 75., 90. i 100. misja oraz każdy opanowany poziom (razem 20 filmików).'),
+      h('li',null,'Ćwiczenie „połącz w pary”: dziecko łączy osobę z właściwą formą (I → am, she → is, they → are), czas z formą albo czasownik z formą z przeszłości. Pierwszy błąd daje podpowiedź, drugi pokazuje odpowiedź.'),
+      h('li',null,'Bohater: w kuźni dziecko wykuwa też hełmy, zbroje, tarcze i buty, a w panelu „Bohater” zakłada je razem z bronią i wybiera wygląd. W czasie misji bohater idzie po trawie do skrzyni: każde zadanie to krok, a przy dobrej odpowiedzi podskakuje.'),
       h('li',null,'Ćwiczenia z literkami (am, is, are, was, were, will, isn’t, aren’t) uczą kolejności liter: wybór dobrej pisowni i układanie słowa z liter. Przed odpowiedzią można posłuchać słowa.'),
       h('li',null,'W grze jest 50 stworków. Za każdą ukończoną misję z co najmniej połową dobrych odpowiedzi dziecko łapie jednego nowego do albumu. Podczas lekcji pokazują się losowo stworki już złapane. Każdy poziom ma też stałego przewodnika.'),
       h('li',null,'Pomaga, gdy dziecko czyta zdania na głos albo powtarza je po lektorce.')),
@@ -2019,7 +2258,7 @@ function renderParent(){
   const resetBox=h('div',{class:'card pcard'},h('h2',null,'Zacznij od nowa'));
   if(!confirmReset)resetBox.append(h('button',{class:'btn secondary',type:'button',onclick:()=>{confirmReset=true;renderParent();}},'Wyzeruj postęp'));
   else resetBox.append(h('div',{class:'confirm'},h('p',null,'To usunie cały postęp, diamenty, album stworków i historię lekcji. Imię i ustawienia zostaną. Na pewno?'),
-    h('div',{class:'row-btns'},h('button',{class:'btn danger',type:'button',onclick:()=>{const keep={name:st.name,tts:st.tts,size:st.size,voice:st.voice,rate:st.rate,sound:st.sound,pin:st.pin};st=Object.assign(fresh(),keep);confirmReset=false;save();renderParent();}},'Tak, wyzeruj'),
+    h('div',{class:'row-btns'},h('button',{class:'btn danger',type:'button',onclick:()=>{const keep={name:st.name,tts:st.tts,size:st.size,voice:st.voice,rate:st.rate,sound:st.sound,pin:st.pin,hero:{eq:{},look:Object.assign({},(st.hero||{}).look||{})}};st=Object.assign(fresh(),keep);confirmReset=false;save();renderParent();}},'Tak, wyzeruj'),
       h('button',{class:'btn secondary',type:'button',onclick:()=>{confirmReset=false;renderParent();}},'Anuluj'))));
   r.append(resetBox);
 }

@@ -1,7 +1,8 @@
 # Wczoraj, dziś, jutro
 
 Aplikacja dla 8-latka do nauki angielskiego: najpierw *to be* (am, is, are, was, were, will be), potem czasy proste.
-Krótkie misje, oś czasu, ćwiczenia z literkami, powtórki w odstępach, kruszce, kuźnia trofeów, medale, 50 stworków i 20 filmików.
+Krótkie misje, oś czasu, ćwiczenia z literkami i łączenie w pary, powtórki w odstępach, kruszce, kuźnia broni i zbroi,
+bohater do ubrania (idzie po trawie w czasie misji), medale, 50 stworków i 20 filmików.
 
 ## Jak uruchomić
 Strona działa przez GitHub Pages: **Settings → Pages → Deploy from a branch → `main` / `(root)`**.
