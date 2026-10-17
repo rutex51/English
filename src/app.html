@@ -658,7 +658,7 @@ function clipBg(c,kind,t){
   if(kind==='day'||kind==='water'){const cl=propC('cloud');for(let i=0;i<3;i++){const x=((t*(6+i*3)+i*130)%420)-60;c.drawImage(cl,Math.round(x),18+i*22,48,15);}}
   if(kind==='night'){c.fillStyle='#FFFFFF';for(let i=0;i<26;i++){if(Math.sin(t*3+i*1.3)>-.4)c.fillRect((i*73)%CW,(i*41)%120,2,2);}c.fillStyle='#FFF3B8';c.fillRect(262,18,22,22);c.fillStyle='#141B33';c.fillRect(270,14,18,18);}
   if(kind==='snow'){c.fillStyle='#FFFFFF';for(let i=0;i<34;i++){const x=(((i*53+Math.sin(t+i)*10)%CW)+CW)%CW,y=((i*37)+t*25)%G;c.fillRect(Math.round(x),Math.round(y),2,2);}}
-  if(kind==='cave'){for(let i=0;i<46;i++){const ore=i%7===0?'#A673E8':i%5===0?'#F2C230':null;c.fillStyle=ore||'#4A4E58';c.fillRect((i*61)%CW,(i*29)%140,ore?4:10,ore?4:6);}}
+  if(kind==='cave'){for(let i=0;i<46;i++){const ore=i%7===0?'#A673E8':i%5===0?'#F2C230':null,x=(i*97+i*i*13)%CW,y=(i*53+i*i*7)%140;c.fillStyle=ore||'#4A4E58';c.fillRect(x,y,ore?4:10,ore?4:6);}}
   if(kind==='stage'){c.fillStyle='#8B2E3C';c.fillRect(0,0,34,G);c.fillRect(CW-34,0,34,G);c.fillStyle='#6E2230';for(let x=6;x<34;x+=9){c.fillRect(x,0,3,G);c.fillRect(CW-34+x,0,3,G);}
     c.fillStyle='rgba(255,240,180,.16)';c.beginPath();c.moveTo(140,0);c.lineTo(180,0);c.lineTo(252,G);c.lineTo(68,G);c.closePath();c.fill();}
   clipGround(c,kind);
@@ -1027,6 +1027,75 @@ function startPlay(cv,idx,bar){
   pl.raf=requestAnimationFrame(frame);
 }
 function stopPlay(){if(PL&&PL.raf)cancelAnimationFrame(PL.raf);PL=null;}
+
+/* ---------- forging animation (about 6 s, then the trophy stays on screen) ---------- */
+const FLIP=new WeakMap();
+function flipOf(sp){if(FLIP.has(sp))return FLIP.get(sp);const cv=document.createElement('canvas');cv.width=sp.width;cv.height=sp.height;const c=cv.getContext('2d');
+  c.translate(sp.width,0);c.scale(-1,1);c.drawImage(sp,0,0);FLIP.set(sp,cv);return cv;}
+const FORGE_HITS=[.6,1.4,2.2,3.0];
+function hammerAngle(t,strike,raise){
+  if(t>=3.1)return strike+.25;
+  let prev=-.2,next=FORGE_HITS[FORGE_HITS.length-1];
+  for(const x of FORGE_HITS){if(x>t){next=x;break;}prev=x;}
+  if(t<prev+.1)return strike-.05;
+  if(t<next-.15)return lerp(strike,raise,eo(pr(t,prev+.1,next-.15)));
+  return lerp(raise,strike,ei(pr(t,next-.15,next)));
+}
+function drawForge(c,t,wid,mat,smith,k){
+  c.setTransform(k,0,0,k,0,0);c.imageSmoothingEnabled=false;c.clearRect(0,0,CW,CH);c.globalAlpha=1;
+  const M=MIN[mat],H=mkH(c,[smith],'cave',t),ax=160,piece={x:ax+4,y:G-36};
+  clipBg(c,'cave',t);
+  const warm=c.createRadialGradient(40,118,8,40,118,150);warm.addColorStop(0,'rgba(255,150,60,.55)');warm.addColorStop(1,'rgba(255,150,60,0)');c.fillStyle=warm;c.fillRect(0,0,CW,CH);
+  for(let i=0;i<6;i++){const fh=10+((i*7+Math.floor(t*14))%9)*2;c.fillStyle=i%2?'#FFA94D':'#F2C230';c.fillRect(18+i*7,G-fh,6,fh);}
+  c.fillStyle='#4A4E58';c.fillRect(12,G-5,50,5);
+  H.spr(propC('anvil'),ax,G,{s:5});
+  const hits=FORGE_HITS.filter(x=>t>=x).length;
+  if(t<3.7){
+    const glow=.35+.2*Math.sin(t*9),rg=c.createRadialGradient(piece.x,piece.y-6,2,piece.x,piece.y-6,34);
+    rg.addColorStop(0,'rgba(255,170,60,'+glow.toFixed(2)+')');rg.addColorStop(1,'rgba(255,170,60,0)');c.fillStyle=rg;c.fillRect(piece.x-40,piece.y-46,80,70);
+    H.spr(minC(mat),piece.x,piece.y,{s:3,sx:1+hits*.12,sy:1-hits*.08});
+  }
+  const sm=creC(smith);H.spr(sm,222,G,{flip:true});
+  if(t<3.5){
+    const hs=4.3,ham=flipOf(troC('mlot','zelazo')),P={x:204,y:130},T={x:piece.x,y:piece.y-10};
+    const strike=Math.atan2(T.y-P.y,T.x-P.x)-Math.atan2(-7,-8),raise=strike+1.1,a=hammerAngle(t,strike,raise);
+    c.save();c.translate(P.x,P.y);c.rotate(a);c.drawImage(ham,-13*hs,-14*hs,16*hs,16*hs);c.restore();
+  }
+  for(const x of FORGE_HITS)if(t>=x&&t<x+.5){H.burst(piece.x,piece.y-10,(t-x)/.5,['#FFD54A','#FF8A3D',M.L],12,36);if(t<x+.35)H.word('KLANG!',piece.x,62,(t-x)/.6);}
+  if(t>=3.4&&t<4.5){const p=t<3.7?(t-3.4)/.3:Math.max(0,1-(t-3.7)/.8);c.save();c.globalAlpha=p*.85;c.fillStyle=M.M;c.fillRect(0,0,CW,CH);
+    c.globalAlpha=p;const wg=c.createRadialGradient(ax,95,4,ax,95,130);wg.addColorStop(0,'#FFFFFF');wg.addColorStop(.4,M.L);wg.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=wg;c.fillRect(0,0,CW,CH);c.restore();}
+  if(t>=3.6){
+    c.save();c.globalAlpha=Math.min(.5,(t-3.6)*.9);c.fillStyle='#14110D';c.fillRect(0,0,CW,CH);c.restore();
+    c.save();c.globalAlpha=.55;c.strokeStyle=M.L;c.lineWidth=5;for(let i=0;i<12;i++){const a=t*.7+i*Math.PI/6;c.beginPath();c.moveTo(ax+Math.cos(a)*24,92+Math.sin(a)*24);c.lineTo(ax+Math.cos(a)*120,92+Math.sin(a)*120);c.stroke();}c.restore();
+    const p=pr(t,3.6,4.25),s=(t<4.25?lerp(.3,8.2,eo(p)):lerp(8.2,7.2,eo(pr(t,4.25,4.6))));
+    H.spr(troC(wid,mat),ax,92+8*s+(t>4.6?Math.sin(t*2.2)*3:0),{s,rot:Math.sin(t*1.6)*.08});
+    for(let i=0;i<5;i++)H.sparkle(ax+Math.cos(t*1.2+i*1.26)*70,92+Math.sin(t*1.2+i*1.26)*44,t+i);
+    if(t>=4.3){c.save();c.globalAlpha=Math.min(1,(t-4.3)*3);c.font='700 20px "Pixelify Sans", Andika, monospace';c.textAlign='center';c.textBaseline='middle';
+      c.lineWidth=5;c.strokeStyle='#14110D';const name=tName(WEAPONS.find(x=>x.id===wid),mat)+'!';c.strokeText(name,ax,CH-16);c.fillStyle=M.L;c.fillText(name,ax,CH-16);c.restore();}
+  }
+}
+function startForgePlay(cv,wid,mat,btn,title){
+  stopPlay();
+  const dpr=Math.min(2,window.devicePixelRatio||1),cw=cv.clientWidth||(cv.parentNode&&cv.parentNode.clientWidth)||320;
+  cv.width=Math.round(cw*dpr);cv.height=Math.round(cw*9/16*dpr);
+  const c=cv.getContext('2d'),k=cv.width/CW,smith=pickCre(1),t0=performance.now(),pl={raf:0};let last=-1,shown=false;PL=pl;
+  const cues=FORGE_HITS.map(x=>[x,'clink']).concat([[3.4,'zap'],[3.8,'fanfare']]);
+  const frame=(now)=>{if(PL!==pl)return;const t=(now-t0)/1000;
+    for(const [ct,kind] of cues)if(ct>last&&ct<=t)sfx(kind);last=t;
+    drawForge(c,t,wid,mat,smith,k);
+    if(!shown&&t>=4.6){shown=true;btn.textContent='Dalej';title.textContent='Nowe trofeum: '+tName(WEAPONS.find(x=>x.id===wid),mat);}
+    pl.raf=requestAnimationFrame(frame);};
+  pl.raf=requestAnimationFrame(frame);
+}
+function showForgeAnim(w,mat,onDone){
+  closeOverlay();
+  const cv=h('canvas',{class:'clip-cv',role:'img','aria-label':'Wykuwanie: '+tName(w,mat)}),title=h('p',{class:'clip-title'},'Kuźnia: wykuwanie…');
+  const btn=h('button',{class:'btn primary big ovl-next',type:'button',onclick:()=>{closeOverlay();onDone();}},'Pomiń');
+  const ov=h('div',{class:'ovl',role:'dialog','aria-modal':'true','aria-label':'Kuźnia'},h('div',{class:'card ovl-card'},title,cv,btn));
+  ov.addEventListener('keydown',e=>{if(e.key==='Escape'){closeOverlay();onDone();}});
+  document.body.append(ov);OV=ov;try{btn.focus({preventScroll:true});}catch(e){}
+  requestAnimationFrame(()=>startForgePlay(cv,w.id,mat,btn,title));
+}
 /* ---------- end rewards engine ---------- */
 
 /* ---------- state ---------- */
@@ -1654,7 +1723,7 @@ function closeOverlay(){stopPlay();if(OV){OV.remove();OV=null;}if(typeof showUpd
 function forge(w,mat){const cost=tCost(w,mat);if((st.min[mat]||0)<cost||st.trophies[w.id+'_'+mat])return;
   st.min[mat]-=cost;st.trophies[w.id+'_'+mat]=Date.now();
   const md=checkMedals().map(m=>Object.assign({kind:'medal'},m));save();
-  openReward([{kind:'trophy',w:w.id,mat}].concat(md),()=>{if(cur==='forge')renderForge();});}
+  showForgeAnim(w,mat,()=>openReward([{kind:'trophy',w:w.id,mat}].concat(md),()=>{if(cur==='forge')renderForge();}));}
 function renderForge(){
   const r=$('#scr-forge');r.replaceChildren();
   r.append(backHeader(),h('h1',{class:'hello'},'Kuźnia'),
