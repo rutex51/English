@@ -350,6 +350,9 @@ p{margin:0}
 .rw-i b{display:block;font-family:var(--f-pixel);font-weight:700;font-size:.95rem;color:var(--ink-soft)}
 .rw-i>span{font-weight:700;font-size:1.05rem}
 
+.upd{position:fixed;left:0;right:0;top:0;z-index:60;display:flex;justify-content:center;
+  padding:calc(env(safe-area-inset-top, 0px) + 8px) max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px))}
+.upd .btn{width:100%;max-width:528px;font-size:1.05rem}
 /* fit on small screens */
 .combo-chip{flex:none;font-family:var(--f-pixel);font-weight:700;font-size:.9rem;background:var(--future);color:var(--ink);border:2px solid var(--outline);padding:1px 6px;white-space:nowrap}
 .next-bar{position:sticky;bottom:0;z-index:5;padding-top:10px;padding-bottom:max(10px, env(safe-area-inset-bottom, 0px));background:linear-gradient(rgba(196,230,255,0),var(--sky) 14px)}
@@ -1360,6 +1363,7 @@ function go(n,keepScroll){cur=n;for(const s of SCR)document.getElementById('scr-
   else if(n==='forge')renderForge();else if(n==='medals')renderMedals();else if(n==='kino')renderKino();
   if(n!=='kino')kinoPreview=false;
   if(n!=='parent'&&n!=='kino'){parentOK=false;gateQ=null;pinMsg='';}
+  if(typeof showUpd==='function')showUpd();
   if(!keepScroll)window.scrollTo(0,0);}
 function albumCount(){return Object.keys(st.album).filter(k=>+k<ALL.length).length;}
 function meet(i){if(st.album[i])return false;st.album[i]=Date.now();return true;}
@@ -1661,7 +1665,7 @@ function showOverlay(items,idx,onClose,isNew){
   try{ov.querySelector('.ovl-next').focus({preventScroll:true});}catch(e){}
   requestAnimationFrame(()=>startPlay(cv,idx,bar));
 }
-function closeOverlay(){stopPlay();if(OV){OV.remove();OV=null;}}
+function closeOverlay(){stopPlay();if(OV){OV.remove();OV=null;}if(typeof showUpd==='function')showUpd();}
 function forge(w,mat){const cost=tCost(w,mat);if((st.min[mat]||0)<cost||st.trophies[w.id+'_'+mat])return;
   st.min[mat]-=cost;st.trophies[w.id+'_'+mat]=Date.now();
   const md=checkMedals().map(m=>Object.assign({kind:'medal'},m));save();
@@ -1891,6 +1895,26 @@ function renderParent(){
       h('button',{class:'btn secondary',type:'button',onclick:()=>{confirmReset=false;renderParent();}},'Anuluj'))));
   r.append(resetBox);
 }
+
+/* ---------- offline + update notice (only on the GitHub Pages copy) ---------- */
+let UPD=null,swReload=false;
+function showUpd(){let el=document.getElementById('updBar');
+  if(!UPD||cur==='lesson'||OV){if(el)el.hidden=true;return;}
+  if(!el){el=h('div',{id:'updBar',class:'upd',role:'status'},h('button',{class:'btn primary',type:'button',onclick:applyUpdate},'Nowa wersja – dotknij, aby odświeżyć'));document.body.append(el);}
+  el.hidden=false;}
+function applyUpdate(){swReload=true;try{if(UPD)UPD.postMessage('skip');else location.reload();}catch(e){location.reload();}setTimeout(()=>location.reload(),4000);}
+(function(){
+  if(window.claude||!('serviceWorker' in navigator))return;
+  if(location.protocol!=='https:'&&location.hostname!=='localhost')return;
+  let reg=null;const ready=w=>{UPD=w;showUpd();};
+  navigator.serviceWorker.register('sw.js').then(r=>{reg=r;
+    if(r.waiting&&navigator.serviceWorker.controller)ready(r.waiting);
+    r.addEventListener('updatefound',()=>{const nw=r.installing;if(!nw)return;
+      nw.addEventListener('statechange',()=>{if(nw.state==='installed'&&navigator.serviceWorker.controller)ready(nw);});});
+  }).catch(()=>{});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&reg)reg.update().catch(()=>{});});
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(swReload){swReload=false;location.reload();}});
+})();
 
 go('home');
 initStore();

@@ -12,6 +12,18 @@ Na telefonie dziecka otwórz adres i wybierz „Dodaj do ekranu głównego”. A
 ## Gdzie jest postęp
 W przeglądarce urządzenia (localStorage). Kopię zapasową zapisuje i wczytuje panel „Dla rodzica” (chroniony PIN-em).
 
+## Offline i aktualizacje
+Po pierwszym otwarciu z internetem aplikacja zapisuje się w telefonie i działa też bez internetu (plik `sw.js`).
+Gdy w repozytorium pojawi się nowa wersja, aplikacja pokaże przycisk „Nowa wersja – dotknij, aby odświeżyć”
+(nie w trakcie misji – dopiero po jej zakończeniu). Postęp zostaje.
+
+## Jak wprowadzić zmianę
+1. Edytuj `src/app.html` (cała aplikacja).
+2. Uruchom `python3 tools/build.py` – zbuduje `index.html` i `sw.js` z nowym numerem wersji.
+3. Zatwierdź i wyślij wszystkie zmienione pliki.
+
 ## Pliki
-- `index.html` – cała aplikacja w jednym pliku
+- `src/app.html` – źródło aplikacji
+- `index.html` – zbudowana strona (z `tools/build.py`)
+- `sw.js` – praca offline i wykrywanie nowej wersji (generowany)
 - `manifest.webmanifest`, `icon-*.png`, `apple-touch-icon.png` – ikona i ustawienia dla „Dodaj do ekranu głównego”
