@@ -347,6 +347,9 @@ p{margin:0}
 .rw{display:flex;flex-direction:column;gap:8px;width:100%}
 .rw-i{display:flex;align-items:center;gap:12px;background:var(--white);border:2px solid var(--outline);padding:8px 10px;text-align:left}
 .rw-i>.pix{width:44px;height:48px}
+.rw-i>.pix.clap{width:44px;height:40px}
+.bonus.mile .pix{width:24px;height:22px}
+.kino-next{font-weight:700;margin:0 0 12px}
 .rw-i b{display:block;font-family:var(--f-pixel);font-weight:700;font-size:.95rem;color:var(--ink-soft)}
 .rw-i>span{font-weight:700;font-size:1.05rem}
 
@@ -629,6 +632,18 @@ const MEDALS=[
  {id:'m100',name:'Mistrz górnik',desc:'Zbierz razem 100 kruszców.',tier:'s',rib:RIB.mine,test:()=>st.stats.mined>=100}];
 function lvDone(l){const p=lvStats(l);return p.total>0&&p.mastered/p.total>=0.6;}
 function checkMedals(){const out=[];for(const md of MEDALS){if(st.medals[md.id])continue;let ok=false;try{ok=md.test();}catch(e){}if(ok){st.medals[md.id]=Date.now();out.push(md);}}return out;}
+/* milestones: each one unlocks one new clip (12 mission counts + 8 mastered levels = 20 clips) */
+const MILE_N=[1,5,10,15,20,30,40,50,60,75,90,100];
+const MILES=MILE_N.map(n=>({id:'s'+n,n,name:n===1?'Pierwsza misja':n+' misji'})).concat([1,2,3,4,5,6,7,8].map(l=>({id:'p'+l,l,name:'Poziom '+l+' opanowany'})));
+function checkMiles(){const out=[];for(const m of MILES){if(st.mile[m.id])continue;let ok=false;try{ok=m.n?(st.stats.sessions||0)>=m.n:lvDone(m.l);}catch(e){}if(ok){st.mile[m.id]=Date.now();out.push(m);}}return out;}
+function unlockNextClip(){for(let i=0;i<CLIPS.length;i++)if(!st.clips[i]){st.clips[i]=Date.now();return i;}return -1;}
+function pickRepeatClip(){const have=Object.keys(st.clips).map(Number).filter(i=>i>=0&&i<CLIPS.length);if(!have.length)return -1;
+  const pool=have.length>1?have.filter(i=>i!==st.lastClip):have;return pool[Math.floor(Math.random()*pool.length)];}
+function nextMileText(){if(Object.keys(st.clips).length>=CLIPS.length)return 'Masz już wszystkie filmiki!';
+  const s=st.stats.sessions||0,nm=MILES.find(m=>m.n&&!st.mile[m.id]&&m.n>s),lv=MILES.find(m=>m.l&&!st.mile[m.id]),parts=[];
+  if(nm){const k=nm.n-s;parts.push('za '+k+' '+plural(k,'misję','misje','misji'));}
+  if(lv)parts.push('po opanowaniu poziomu '+lv.l);
+  return parts.length?'Następny nowy filmik: '+parts.join(' albo ')+'.':'';}
 const comboMin=n=>n>=7?'diament':n>=5?'zloto':n>=3?'zelazo':'miedz';
 function addMin(k,n){st.min[k]=(st.min[k]||0)+n;st.stats.mined=(st.stats.mined||0)+n;if(S&&S.loot)S.loot[k]=(S.loot[k]||0)+n;}
 function canForgeAny(){return WEAPONS.some(w=>MINS.some(m=>!st.trophies[w.id+'_'+m]&&(st.min[m]||0)>=tCost(w,m)));}
@@ -1119,14 +1134,18 @@ function showForgeAnim(w,mat,medals,onDone){
 
 /* ---------- state ---------- */
 function fresh(){return {v:1,name:'Kuba',tts:true,size:10,unlockAll:false,voice:'Samantha',rate:0.7,gems:0,cards:{},seenLv:{},album:{},sessions:[],streak:{last:'',n:0},updated:0,sound:true,
-  min:{miedz:0,zelazo:0,zloto:0,szmaragd:0,ametyst:0,diament:0},medals:{},trophies:{},clips:{},stats:{sessions:0,perfect:0,bestCombo:0,letters:0,mined:0},pin:null};}
+  min:{miedz:0,zelazo:0,zloto:0,szmaragd:0,ametyst:0,diament:0},medals:{},trophies:{},clips:{},mile:{},lastClip:-1,stats:{sessions:0,perfect:0,bestCombo:0,letters:0,mined:0},pin:null};}
 function merge(o){const f=fresh();if(!o||typeof o!=='object')return f;const r=Object.assign(f,o);
   r.cards=Object.assign({},o.cards||{});r.seenLv=Object.assign({},o.seenLv||{});r.album=Object.assign({},o.album||{});
   const legacy=o.min?0:(o.gems||0),ss=Array.isArray(o.sessions)?o.sessions:[];
   r.min=Object.assign({miedz:0,zelazo:0,zloto:0,szmaragd:0,ametyst:0,diament:legacy},o.min||{});
   r.medals=Object.assign({},o.medals||{});r.trophies=Object.assign({},o.trophies||{});r.clips=Object.assign({},o.clips||{});
   r.stats=Object.assign({sessions:ss.length,perfect:ss.filter(s=>s.n>=6&&s.f===s.n).length,bestCombo:0,letters:0,mined:legacy},o.stats||{});
-  r.sessions=Array.isArray(o.sessions)?o.sessions.slice(-40):[];r.streak=Object.assign({last:'',n:0},o.streak||{});return r;}
+  r.sessions=Array.isArray(o.sessions)?o.sessions.slice(-40):[];r.streak=Object.assign({last:'',n:0},o.streak||{});
+  if(o.mile&&typeof o.mile==='object')r.mile=Object.assign({},o.mile);
+  else{r.mile={};for(const m of MILES)if(m.n?(r.stats.sessions||0)>=m.n:r.medals['p'+m.l])r.mile[m.id]=1;
+    const need=Math.min(Object.keys(r.mile).length,CLIPS.length);for(let i=0;i<CLIPS.length&&Object.keys(r.clips).length<need;i++)if(!r.clips[i])r.clips[i]=Date.now();}
+  return r;}
 let st=fresh();
 try{const raw=localStorage.getItem(LS);if(raw)st=merge(JSON.parse(raw));}catch(e){}
 const fill=(s)=>String(s==null?'':s).split('{name}').join(st.name||'Kuba');
@@ -1642,7 +1661,7 @@ function introCard(l,onGo){
 function finishSession(completed){
   const base=S.items.filter(x=>x.mode!=='retry'&&x.state==='done');
   const f=base.filter(x=>x.first).length,n=base.length,ratio=n?f/n:0;
-  const rewards=[];let newMedals=[],caught=-1;
+  const rewards=[];let newMedals=[],caught=-1,miles=[],newClips=0,clipIdx=-1,clipNew=false;
   const lv={};for(const x of base){const a=lv[x.c.l]||(lv[x.c.l]=[0,0]);a[1]++;if(x.first)a[0]++;}
   if(n&&completed){
     const firstToday=!doneToday();
@@ -1658,6 +1677,10 @@ function finishSession(completed){
     if(firstToday)give('ametyst',1,'pierwszą misję dnia');
     if(ratio>=.5){const un=[];for(let i=6;i<ALL.length;i++)if(!st.album[i])un.push(i);if(un.length){caught=un[Math.floor(Math.random()*un.length)];meet(caught);}}
     newMedals=checkMedals().map(m=>Object.assign({kind:'medal'},m));
+    miles=checkMiles();
+    for(const m of miles){const i=unlockNextClip();if(i>=0){newClips++;if(clipIdx<0){clipIdx=i;clipNew=true;}}}
+    if(clipIdx<0&&(ratio>=.5||miles.length))clipIdx=pickRepeatClip();
+    if(clipIdx>=0)st.lastClip=clipIdx;
   }else if(n){st.sessions.push({t:Date.now(),n,f,lv,focus:S.level,part:true});st.sessions=st.sessions.slice(-40);}
   save();
   const ups=base.filter(x=>x.first&&x.mode!=='practice').length;
@@ -1677,16 +1700,18 @@ function finishSession(completed){
     h('div',{class:'loot','aria-label':'Za pierwszym razem: '+f+' z '+n},base.map((x,i)=>{const el=h('span',{class:x.first?'hit':'miss'});el.style.animationDelay=(i*70)+'ms';return el;})),
     h('div',{class:'sum-lines'},
       h('p',null,h('strong',null,'Za pierwszym razem: '+f+' z '+n)),
-      completed?h('div',{class:'rewards'},h('p',{class:'label'},'Nagroda za misję'),rewards.map(([k,cnt,why])=>h('p',{class:'bonus'},minEl(k),'+'+cnt+' '+MIN[k].name.toLowerCase()+' za '+why))):
-        h('p',null,'Misja nie jest skończona, więc tym razem bez kruszców, stworków i medali. Postęp w zdaniach jest zapisany.'),
+      completed?h('div',{class:'rewards'},h('p',{class:'label'},'Nagroda za misję'),rewards.map(([k,cnt,why])=>h('p',{class:'bonus'},minEl(k),'+'+cnt+' '+MIN[k].name.toLowerCase()+' za '+why)),
+        newClips?h('p',{class:'bonus mile'},pix(CLAP,CLAP_P),'Kamień milowy: '+miles.map(m=>m.name.toLowerCase()).join(', ')+'! '+(newClips>1?newClips+' nowe filmiki':'Nowy filmik')+' w kinie.'):null):
+        h('p',null,'Misja nie jest skończona, więc tym razem bez kruszców, stworków, medali i filmików. Postęp w zdaniach jest zapisany.'),
       hint?h('p',{class:'muted'},hint):null,
-      completed&&ratio<.5?h('p',{class:'muted'},'Nowy stworek wpada, gdy co najmniej połowa odpowiedzi jest dobra za pierwszym razem.'):null,
+      completed&&ratio<.5?h('p',{class:'muted'},'Stworek i filmik wpadają, gdy co najmniej połowa odpowiedzi jest dobra za pierwszym razem.'):null,
+      completed&&!newClips&&nextMileText()?h('p',{class:'muted'},nextMileText()):null,
       ups?h('p',null,ups+' '+plural(ups,'zdanie poszło','zdania poszły','zdań poszło')+' do wyższego pudełka.'):null,
       h('p',{class:'muted'},dueSoon?'Jutro czeka '+dueSoon+' '+plural(dueSoon,'powtórka','powtórki','powtórek')+'. Wróć, żeby nie zapomnieć!':'Wróć jutro po nowe zdania.')),
     newMedals.length?h('div',{class:'rw'},h('p',{class:'label'},newMedals.length>1?'Nowe medale!':'Nowy medal!'),newMedals.map(rwItem)):null,
-    newMedals.length?h('button',{class:'btn primary big',type:'button',onclick:()=>openReward(newMedals,()=>go('home'))},'Otwórz filmik'):null,
+    clipIdx>=0?h('button',{class:'btn primary big',type:'button',onclick:()=>openReward(newMedals.concat(clipNew?miles.map(m=>Object.assign({kind:'mile'},m)):[]),clipIdx,clipNew,()=>go('home'))},'Otwórz filmik'):null,
     canForgeAny()?h('button',{class:'btn secondary',type:'button',onclick:()=>go('forge')},'Masz kruszce. Idź do kuźni!'):null,
-    h('button',{class:newMedals.length?'btn secondary':'btn primary big',type:'button',onclick:()=>go('home')},'Wróć do bazy')));
+    h('button',{class:clipIdx>=0?'btn secondary':'btn primary big',type:'button',onclick:()=>go('home')},'Wróć do bazy')));
   S=null;go('sum');
 }
 
@@ -1717,9 +1742,9 @@ function renderSheet(){
 /* ---------- rewards UI ---------- */
 function rwItem(it){
   if(it.kind==='trophy'){const w=WEAPONS.find(x=>x.id===it.w);return h('div',{class:'rw-i'},trophyEl(it.w,it.mat),h('span',null,h('b',null,'Nowe trofeum'),tName(w,it.mat)));}
+  if(it.kind==='mile')return h('div',{class:'rw-i'},pix(CLAP,CLAP_P,'clap'),h('span',null,h('b',null,'Kamień milowy · nowy filmik'),it.name));
   return h('div',{class:'rw-i'},medalEl(it),h('span',null,h('b',null,'Nowy medal · '+TIER[it.tier].name),it.name));}
-function unlockClip(){for(let i=0;i<CLIPS.length;i++)if(!st.clips[i]){st.clips[i]=Date.now();return i;}return Math.floor(Math.random()*CLIPS.length);}
-function openReward(items,onClose){const idx=unlockClip();save();showOverlay(items,idx,onClose,true);}
+function openReward(items,idx,isNew,onClose){if(idx<0||idx>=CLIPS.length){if(onClose)onClose();return;}showOverlay(items,idx,onClose,isNew);}
 function showOverlay(items,idx,onClose,isNew){
   closeOverlay();
   const cv=h('canvas',{class:'clip-cv',role:'img','aria-label':'Filmik: '+CLIPS[idx].title}),bar=h('i');
@@ -1758,7 +1783,7 @@ function renderForge(){
 function renderMedals(){
   const r=$('#scr-medals');r.replaceChildren();
   r.append(backHeader(),h('h1',{class:'hello'},'Medale'),
-    h('p',{class:'muted'},'Zdobyte: '+Object.keys(st.medals).length+' z '+MEDALS.length+'. Medal zdobyty w misji odblokowuje filmik w kinie.'),
+    h('p',{class:'muted'},'Zdobyte: '+Object.keys(st.medals).length+' z '+MEDALS.length+'.'),
     h('div',{class:'mgrid'},MEDALS.map(md=>{const got=st.medals[md.id];
       return h('div',{class:'mcell'+(got?'':' locked')},medalEl(md),h('b',null,md.name),h('span',null,md.desc),
         h('small',null,got?'Zdobyty '+new Date(got).toLocaleDateString('pl-PL'):'Jeszcze przed tobą'));})));
@@ -1766,8 +1791,9 @@ function renderMedals(){
 function renderKino(){
   const r=$('#scr-kino');r.replaceChildren();
   r.append(backHeader(),h('h1',{class:'hello'},'Kino stworków'),
-    h('p',{class:'muted'},kinoPreview?'Podgląd dla rodzica: wszystkie filmiki są tu dostępne. Dziecko odblokowuje je za medale zdobyte w misjach.':
-      'Odblokowane: '+Object.keys(st.clips).length+' z '+CLIPS.length+'. Każdy nowy medal zdobyty w misji odblokowuje kolejny filmik.'));
+    h('p',{class:'muted'},kinoPreview?'Podgląd dla rodzica: wszystkie filmiki są tu dostępne. Dziecko odblokowuje je w kamieniach milowych.':
+      'Odblokowane: '+Object.keys(st.clips).length+' z '+CLIPS.length+'. Nowe filmiki dostajesz za duże osiągnięcia: kolejne misje (1, 5, 10, 15, 20, 30…) i każdy opanowany poziom. Po wygranej misji oglądasz jeden ze swoich filmików.'),
+    kinoPreview||!nextMileText()?null:h('p',{class:'kino-next'},nextMileText()));
   const thumbs=[];
   r.append(h('div',{class:'kgrid'},CLIPS.map((cl,i)=>{
     if(st.clips[i]||kinoPreview){const cv=h('canvas',{class:'kthumb',width:'320',height:'180','aria-hidden':'true'});thumbs.push([cv,i]);
@@ -1950,7 +1976,7 @@ function renderParent(){
       h('li',null,'Pierwsza część to samo to be, bo to jest teraz trudne. Ćwiczenia celują w typowe błędy: „I have eight years”, „they is”, „I am play”.'),
       h('li',null,'Nagrody są tylko za ukończoną misję, nie za pojedyncze odpowiedzi. Przerwana misja zapisuje postęp, ale nic nie daje. Za ukończenie: 2 miedzi; przy 70% dobrych odpowiedzi za pierwszym razem także żelazo, przy 85% złoto, za misję bez błędu (min. 6 zadań) diament. Szmaragd jest za co najmniej 3 dobrze zapamiętane stare zdania, ametyst za pierwszą misję dnia.'),
       h('li',null,'Medale za poziomy przychodzą dopiero wtedy, gdy 60% zdań poziomu trafi do pudełka 3 lub wyżej, czyli po kilku dniach powtórek.'),
-      h('li',null,'W kuźni dziecko wymienia kruszce na trofea (miecze, łuki, topory, młoty, włócznie, trójzęby). Za medale zdobyte w misjach odblokowuje 15-sekundowe filmiki, w których stworki mówią proste zdania z to be.'),
+      h('li',null,'W kuźni dziecko wymienia kruszce na trofea (miecze, łuki, topory, młoty, włócznie, trójzęby). Po każdej wygranej misji (co najmniej połowa odpowiedzi dobrze za pierwszym razem) ogląda 15-sekundowy filmik, zwykle jeden z już odblokowanych. Nowe filmiki odblokowuje tylko w kamieniach milowych: 1., 5., 10., 15., 20., 30., 40., 50., 60., 75., 90. i 100. misja oraz każdy opanowany poziom (razem 20 filmików).'),
       h('li',null,'Ćwiczenia z literkami (am, is, are, was, were, will, isn’t, aren’t) uczą kolejności liter: wybór dobrej pisowni i układanie słowa z liter. Przed odpowiedzią można posłuchać słowa.'),
       h('li',null,'W grze jest 50 stworków. Za każdą ukończoną misję z co najmniej połową dobrych odpowiedzi dziecko łapie jednego nowego do albumu. Podczas lekcji pokazują się losowo stworki już złapane. Każdy poziom ma też stałego przewodnika.'),
       h('li',null,'Pomaga, gdy dziecko czyta zdania na głos albo powtarza je po lektorce.')),
@@ -1959,7 +1985,7 @@ function renderParent(){
   r.append(pinCard());
   r.append(backupCard());
   r.append(h('div',{class:'card pcard'},h('h2',null,'Filmiki'),
-    h('p',{class:'muted'},'Dziecko odblokowuje filmiki za medale zdobyte w misjach. Tu możesz obejrzeć wszystkie wcześniej, bez odblokowywania.'),
+    h('p',{class:'muted'},'Dziecko odblokowuje nowe filmiki w kamieniach milowych (liczba misji i opanowane poziomy), a po zwykłej wygranej misji ogląda powtórkę. Tu możesz obejrzeć wszystkie wcześniej, bez odblokowywania.'),
     h('button',{class:'btn secondary',type:'button',onclick:()=>{kinoPreview=true;go('kino');kinoPreview=true;renderKino();}},'Podgląd wszystkich filmików')));
   const resetBox=h('div',{class:'card pcard'},h('h2',null,'Zacznij od nowa'));
   if(!confirmReset)resetBox.append(h('button',{class:'btn secondary',type:'button',onclick:()=>{confirmReset=true;renderParent();}},'Wyzeruj postęp'));
