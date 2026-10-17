@@ -1684,7 +1684,7 @@ function finishSession(completed){
       ups?h('p',null,ups+' '+plural(ups,'zdanie poszło','zdania poszły','zdań poszło')+' do wyższego pudełka.'):null,
       h('p',{class:'muted'},dueSoon?'Jutro czeka '+dueSoon+' '+plural(dueSoon,'powtórka','powtórki','powtórek')+'. Wróć, żeby nie zapomnieć!':'Wróć jutro po nowe zdania.')),
     newMedals.length?h('div',{class:'rw'},h('p',{class:'label'},newMedals.length>1?'Nowe medale!':'Nowy medal!'),newMedals.map(rwItem)):null,
-    newMedals.length?h('button',{class:'btn primary big',type:'button',onclick:()=>openReward(newMedals,()=>go('home'))},'Odbierz nagrodę: filmik!'):null,
+    newMedals.length?h('button',{class:'btn primary big',type:'button',onclick:()=>openReward(newMedals,()=>go('home'))},'Otwórz filmik'):null,
     canForgeAny()?h('button',{class:'btn secondary',type:'button',onclick:()=>go('forge')},'Masz kruszce. Idź do kuźni!'):null,
     h('button',{class:newMedals.length?'btn secondary':'btn primary big',type:'button',onclick:()=>go('home')},'Wróć do bazy')));
   S=null;go('sum');
