@@ -553,8 +553,9 @@ body.walking .app{padding-bottom:80px}
 const DAY=864e5, INT=[0,0,1,3,7,16], LS='wdj-progress-v1';
 /* ---------- app version: add a line at the top of CHANGES with every update (newest first).
    Version number = 1.(number of entries − 1). BUILD is filled in by tools/build.py. ---------- */
-const BUILD='5c42c5363386';
+const BUILD='fe3303be2576';
 const CHANGES=[
+ ['2026-10-18','Krótsza pauza po wylądowaniu łupu: podsumowanie po 1 sekundzie.'],
  ['2026-10-18','Przy otwieraniu skrzyni karta zadania i przycisk znikają, a podsumowanie pojawia się dopiero chwilę po wylądowaniu całego łupu.'],
  ['2026-10-18','Mniejsze okno po odpowiedzi: bez kafelków z odpowiedziami i bez powtarzania zdania, żeby trawa z bohaterem i skrzynią była widoczna.'],
  ['2026-10-18','Czytelna tabela nagród z przyciskiem „i”, animacja otwierania skrzyni na końcu misji, poprawiony napis „filmik”, bez przypadkowego powiększania ekranu.'],
@@ -2169,7 +2170,7 @@ function openChest(loot,creature,done){
   setTimeout(()=>sfx('clink'),350);setTimeout(()=>sfx('pop'),800);if(creature)setTimeout(()=>sfx('boing'),(900+n*180));setTimeout(()=>sfx('fanfare'),1100+n*180);
   /* the summary comes only after everything has landed, plus time to look at the loot */
   const landed=Math.max(n?0.8+(n-1)*0.18+1.5:0,creature?0.9+n*0.18+1.3:0);
-  setTimeout(()=>{if(my!==chestSeq)return;lesson.classList.remove('ending');done();},reduce?1200:Math.round((landed+1.8)*1000));
+  setTimeout(()=>{if(my!==chestSeq)return;lesson.classList.remove('ending');done();},reduce?1200:Math.round((landed+1.0)*1000));
 }
 function walkScale(){return innerWidth>=700?4:3;}
 function updateWalker(){
