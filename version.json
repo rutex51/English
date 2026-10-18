@@ -1,1 +1,1 @@
-{"ver": "1.10", "date": "2026-10-18", "build": "d2a58b4792ff", "notes": "Najwyżej 1 zadanie „połącz w pary” i 1 zadanie „dobrze czy źle” na misję."}
+{"ver": "1.11", "date": "2026-10-18", "build": "9221f8e62de0", "notes": "Zadanie w pary i „dobrze czy źle” po błędzie znów wraca jako powtórka na końcu misji (limit 1 dotyczy tylko układania misji)."}
