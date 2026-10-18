@@ -363,6 +363,7 @@ p{margin:0}
 .rw-i>.pix.clap{width:44px;height:40px}
 .bonus.mile .pix{width:24px;height:22px}
 .rw-head{position:relative;display:flex;align-items:center;justify-content:center;width:100%;min-height:34px}
+.rw-head .label{padding:0 42px;text-align:center}
 .info-btn{position:absolute;right:0;top:50%;transform:translateY(-50%);width:34px;height:34px;display:grid;place-items:center;background:var(--diamond-soft);color:var(--diamond-ink);border:2px solid var(--outline);box-shadow:var(--bevel),0 2px 0 var(--outline);font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:700;font-size:1.25rem;line-height:1}
 .info-btn:active{transform:translateY(calc(-50% + 2px));box-shadow:var(--bevel)}
 .rw-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;width:100%;max-width:calc(var(--cols) * 64px + (var(--cols) - 1) * 10px);margin:2px auto 0}
@@ -370,6 +371,7 @@ p{margin:0}
 .rw-cell .pix{width:30px;height:30px}
 .rw-cell b{font-family:var(--f-pixel);font-weight:700;font-size:1.2rem;line-height:1}
 .rw-note{font-weight:700;color:var(--diamond-ink)}
+.easy-note{font-weight:700;color:var(--future-ink);background:var(--future-soft);border:2px solid var(--outline);padding:8px 10px;line-height:1.35}
 .info-body{display:flex;flex-direction:column;gap:10px;text-align:left}
 .info-list{display:flex;flex-direction:column;gap:8px}
 .info-row{display:flex;align-items:center;gap:12px;padding:8px 10px;background:var(--white);border:2px solid var(--outline);line-height:1.3}
@@ -540,6 +542,7 @@ const DAY=864e5, INT=[0,0,1,3,7,16], LS='wdj-progress-v1';
    Version number = 1.(number of entries − 1). BUILD is filled in by tools/build.py. ---------- */
 const BUILD='__BUILD__';
 const CHANGES=[
+ ['2026-10-18','Misje z poziomu 1 dają mniejsze nagrody niż wyższe poziomy.'],
  ['2026-10-18','Krótsza pauza po wylądowaniu łupu: podsumowanie po 1 sekundzie.'],
  ['2026-10-18','Przy otwieraniu skrzyni karta zadania i przycisk znikają, a podsumowanie pojawia się dopiero chwilę po wylądowaniu całego łupu.'],
  ['2026-10-18','Mniejsze okno po odpowiedzi: bez kafelków z odpowiedziami i bez powtarzania zdania, żeby trawa z bohaterem i skrzynią była widoczna.'],
@@ -1704,7 +1707,7 @@ function renderHome(){
         h('p',{class:'today-big'},prev.length+' '+plural(prev.length,'zadanie','zadania','zadań')+' · ok. '+mins+' min')),
       sk?h('div',{class:'streak',title:'Dni nauki z rzędu'},h('b',null,String(sk)),h('span',null,plural(sk,'dzień','dni','dni')+' z rzędu')):null),
     h('div',{class:'chips'},h('span',{class:'chip'},'Powtórki: '+cnt('due')),h('span',{class:'chip'},'Nowe: '+cnt('new')),cnt('practice')?h('span',{class:'chip'},'Utrwalanie: '+cnt('practice')):null),
-    h('p',{class:'muted small'},'Nagrody dostajesz za ukończoną misję. Im mniej błędów, tym cenniejsze kruszce, a do tego nowy stworek.'),
+    h('p',{class:'muted small'},'Nagrody dostajesz za ukończoną misję. Im mniej błędów, tym cenniejsze kruszce, a do tego nowy stworek. Wyższe poziomy dają więcej niż poziom 1.'),
     h('button',{class:'btn primary big',type:'button',onclick:()=>startLesson(0)},done?'Jeszcze jedna misja':'Start!'),
     done?h('p',{class:'muted small'},'Na dziś wystarczy. Powtórki działają najlepiej po przerwie, więc wróć jutro.'):null));
   r.append(h('button',{class:'sheet-link',type:'button',onclick:()=>go('sheet')},
@@ -1918,16 +1921,23 @@ function finishSession(completed){
   const f=base.filter(x=>x.first).length,n=base.length,ratio=n?f/n:0;
   const rewards=[];let newMedals=[],caught=-1,miles=[],newClips=0,clipIdx=-1,clipNew=false;
   const lv={};for(const x of base){const a=lv[x.c.l]||(lv[x.c.l]=[0,0]);a[1]++;if(x.first)a[0]++;}
+  const easy=isEasyMission(lv,n);
   if(n&&completed){
     const firstToday=!doneToday();
     st.sessions.push({t:Date.now(),n,f,lv,focus:S.level});st.sessions=st.sessions.slice(-40);
     const k=dayKey();if(st.streak.last!==k){st.streak.n=(st.streak.last===dayKey(Date.now()-DAY))?st.streak.n+1:1;st.streak.last=k;}
     st.stats.sessions=(st.stats.sessions||0)+1;
     const give=(m,cnt,why)=>{addMin(m,cnt);rewards.push([m,cnt,why]);};
-    give('miedz',2,'ukończoną misję');
-    if(ratio>=.7)give('zelazo',1,'70% dobrych odpowiedzi');
-    if(ratio>=.85)give('zloto',1,'85% dobrych odpowiedzi');
-    if(n>=6&&f===n){st.stats.perfect=(st.stats.perfect||0)+1;give('diament',1,'misję bez błędu');}
+    if(easy){/* level 1 (am, is, are) pays less, so harder levels are worth more */
+      give('miedz',1,'ukończoną misję z poziomu 1');
+      if(ratio>=.85)give('zelazo',1,'85% dobrych odpowiedzi');
+      if(n>=6&&f===n){st.stats.perfect=(st.stats.perfect||0)+1;give('zloto',1,'misję bez błędu');}
+    }else{
+      give('miedz',2,'ukończoną misję');
+      if(ratio>=.7)give('zelazo',1,'70% dobrych odpowiedzi');
+      if(ratio>=.85)give('zloto',1,'85% dobrych odpowiedzi');
+      if(n>=6&&f===n){st.stats.perfect=(st.stats.perfect||0)+1;give('diament',1,'misję bez błędu');}
+    }
     if((S.memHits||0)>=3)give('szmaragd',1,'pamiętanie starych zdań');
     if(firstToday)give('ametyst',1,'pierwszą misję dnia');
     if(ratio>=.5){const un=[];for(let i=6;i<ALL.length;i++)if(!st.album[i])un.push(i);if(un.length){caught=un[Math.floor(Math.random()*un.length)];meet(caught);}}
@@ -1945,7 +1955,8 @@ function finishSession(completed){
   const topLv=+(Object.keys(lvCount).sort((a,b)=>lvCount[b]-lvCount[a])[0]||1);
   const star=caught>=0?caught:guideIdx(topLv);
   const title=!completed?'Misja przerwana':ratio>=.9?'Fantastycznie!':ratio>=.7?'Brawo!':ratio>=.4?'Dobra robota!':'Ćwiczymy dalej!';
-  const hint=!completed?null:ratio<.7?'Przy 70% dobrych odpowiedzi dostaniesz też żelazo.':ratio<.85?'Przy 85% dobrych odpowiedzi dostaniesz też złoto.':(f<n||n<6)?'Misja bez żadnego błędu (co najmniej 6 zadań) daje diament!':'Perfekcyjna misja!';
+  const hint=!completed?null:easy?(ratio<.85?'Przy 85% dobrych odpowiedzi dostaniesz też żelazo.':(f<n||n<6)?'Misja bez żadnego błędu (co najmniej 6 zadań) daje złoto!':'Perfekcyjna misja!')
+    :ratio<.7?'Przy 70% dobrych odpowiedzi dostaniesz też żelazo.':ratio<.85?'Przy 85% dobrych odpowiedzi dostaniesz też złoto.':(f<n||n<6)?'Misja bez żadnego błędu (co najmniej 6 zadań) daje diament!':'Perfekcyjna misja!';
   const r=$('#scr-sum');r.replaceChildren();
   r.append(h('header',{class:'top'},wordmark()));
   r.append(h('div',{class:'card sum-card'},
@@ -1956,12 +1967,13 @@ function finishSession(completed){
     h('div',{class:'sum-lines'},
       h('p',null,h('strong',null,'Za pierwszym razem: '+f+' z '+n)),
       completed?h('div',{class:'rewards'},
-        h('div',{class:'rw-head'},h('p',{class:'label'},'Nagroda za misję'),
-          h('button',{class:'info-btn',type:'button','aria-label':'Za co ta nagroda?',title:'Za co ta nagroda?',onclick:()=>showRewardInfo(rewards,miles,newClips)},'i')),
+        h('div',{class:'rw-head'},h('p',{class:'label'},easy?'Nagroda · poziom 1':'Nagroda za misję'),
+          h('button',{class:'info-btn',type:'button','aria-label':'Za co ta nagroda?',title:'Za co ta nagroda?',onclick:()=>showRewardInfo(rewards,miles,newClips,easy)},'i')),
         rwGrid(rewards.map(([k,cnt])=>[minEl(k),'+'+cnt,MIN[k].name]).concat(newClips?[[pix(CLAP,CLAP_P,'clap'),'+'+newClips,newClips>1?'Nowe filmiki':'Nowy filmik']]:[])),
         newClips?h('p',{class:'rw-note'},(newClips>1?'Nowe filmiki':'Nowy filmik')+' w kinie!'):null):
         h('p',null,'Misja nie jest skończona, więc tym razem bez kruszców, stworków, medali i filmików. Postęp w zdaniach jest zapisany.'),
       hint?h('p',{class:'muted'},hint):null,
+      completed&&easy?h('p',{class:'easy-note'},'Poziom 1 daje mniejsze nagrody. Wyższe poziomy dają więcej kruszców!'):null,
       completed&&ratio<.5?h('p',{class:'muted'},'Stworek i filmik wpadają, gdy co najmniej połowa odpowiedzi jest dobra za pierwszym razem.'):null,
       completed&&!newClips&&nextMileText()?h('p',{class:'muted'},nextMileText()):null,
       ups?h('p',null,ups+' '+plural(ups,'zdanie poszło','zdania poszły','zdań poszło')+' do wyższego pudełka.'):null,
@@ -2009,14 +2021,20 @@ function showInfo(title,body){
     h('div',{class:'card ovl-card info-card'},h('p',{class:'clip-title'},title),body,btn));
   ov.addEventListener('keydown',e=>{if(e.key==='Escape')done();});
   document.body.append(ov);OV=ov;try{btn.focus({preventScroll:true});}catch(e){}}
+/* a mission counts as level 1 when more than half of its tasks come from level 1 */
+function isEasyMission(lv,n){return n>0&&((lv[1]&&lv[1][1])||0)/n>0.5;}
 const REWARD_RULES=[['miedz','+2','za każdą ukończoną misję'],['zelazo','+1','gdy co najmniej 70% odpowiedzi jest dobrych za pierwszym razem'],
   ['zloto','+1','gdy co najmniej 85% odpowiedzi jest dobrych za pierwszym razem'],['diament','+1','za misję bez żadnego błędu (co najmniej 6 zadań)'],
   ['szmaragd','+1','gdy pamiętasz co najmniej 3 stare zdania z powtórek'],['ametyst','+1','za pierwszą misję dnia']];
-function showRewardInfo(rewards,miles,newClips){
+const REWARD_RULES_EASY=[['miedz','+1','za każdą ukończoną misję'],['zelazo','+1','gdy co najmniej 85% odpowiedzi jest dobrych za pierwszym razem'],
+  ['zloto','+1','za misję bez żadnego błędu (co najmniej 6 zadań)'],
+  ['szmaragd','+1','gdy pamiętasz co najmniej 3 stare zdania z powtórek'],['ametyst','+1','za pierwszą misję dnia']];
+function showRewardInfo(rewards,miles,newClips,easy){
   const got={};for(const [k,cnt] of rewards)got[k]=cnt;
   showInfo('Za co ta nagroda?',h('div',{class:'info-body'},
+    easy?h('p',{class:'easy-note'},'To była misja z poziomu 1 (am, is, are), więc nagrody są mniejsze. Na wyższych poziomach dostaniesz więcej: 2 miedzi, żelazo już przy 70%, złoto przy 85% i diament za misję bez błędu.'):null,
     h('p',{class:'muted'},'Zielone kruszce zdobyłeś w tej misji.'),
-    h('div',{class:'info-list'},REWARD_RULES.map(([k,cnt,why])=>h('div',{class:'info-row'+(got[k]?' got':'')},minEl(k),
+    h('div',{class:'info-list'},(easy?REWARD_RULES_EASY:REWARD_RULES).map(([k,cnt,why])=>h('div',{class:'info-row'+(got[k]?' got':'')},minEl(k),
       h('span',null,h('b',null,MIN[k].name+' '+cnt),' '+why),got[k]?h('span',{class:'tick',title:'Zdobyte w tej misji'},'✓'):null)),
       newClips?h('div',{class:'info-row got'},pix(CLAP,CLAP_P,'clap'),h('span',null,h('b',null,(newClips>1?newClips+' nowe filmiki':'Nowy filmik')+' w kinie'),' za kamień milowy: '+miles.map(m=>m.name.toLowerCase()).join(', ')+'.'),h('span',{class:'tick'},'✓')):null)));}
 function rwItem(it){
@@ -2350,7 +2368,7 @@ function renderParent(){
       h('li',null,'Lekcja zaczyna się od rozumienia (kto? kiedy?), potem jest wybór formy, ocena zdania i układanie zdania.'),
       h('li',null,'Przy błędzie dziecko dostaje podpowiedź zamiast gotowej odpowiedzi. Zdanie z błędem wraca na końcu lekcji.'),
       h('li',null,'Pierwsza część to samo to be, bo to jest teraz trudne. Ćwiczenia celują w typowe błędy: „I have eight years”, „they is”, „I am play”.'),
-      h('li',null,'Nagrody są tylko za ukończoną misję, nie za pojedyncze odpowiedzi. Przerwana misja zapisuje postęp, ale nic nie daje. Za ukończenie: 2 miedzi; przy 70% dobrych odpowiedzi za pierwszym razem także żelazo, przy 85% złoto, za misję bez błędu (min. 6 zadań) diament. Szmaragd jest za co najmniej 3 dobrze zapamiętane stare zdania, ametyst za pierwszą misję dnia.'),
+      h('li',null,'Nagrody są tylko za ukończoną misję, nie za pojedyncze odpowiedzi. Przerwana misja zapisuje postęp, ale nic nie daje. Za ukończenie: 2 miedzi; przy 70% dobrych odpowiedzi za pierwszym razem także żelazo, przy 85% złoto, za misję bez błędu (min. 6 zadań) diament. Szmaragd jest za co najmniej 3 dobrze zapamiętane stare zdania, ametyst za pierwszą misję dnia. Misja, w której ponad połowa zadań jest z poziomu 1, daje mniej: 1 miedź, żelazo dopiero przy 85%, złoto za misję bez błędu i bez diamentu (szmaragd i ametyst bez zmian). Stworki, medale i filmiki działają tak samo na każdym poziomie.'),
       h('li',null,'Medale za poziomy przychodzą dopiero wtedy, gdy 60% zdań poziomu trafi do pudełka 3 lub wyżej, czyli po kilku dniach powtórek.'),
       h('li',null,'W kuźni dziecko wymienia kruszce na trofea (miecze, łuki, topory, młoty, włócznie, trójzęby). Po każdej wygranej misji (co najmniej połowa odpowiedzi dobrze za pierwszym razem) ogląda 15-sekundowy filmik, zwykle jeden z już odblokowanych. Nowe filmiki odblokowuje tylko w kamieniach milowych: 1., 5., 10., 15., 20., 30., 40., 50., 60., 75., 90. i 100. misja oraz każdy opanowany poziom (razem 20 filmików).'),
       h('li',null,'Ćwiczenie „połącz w pary”: dziecko łączy osobę z właściwą formą (I → am, she → is, they → are), czas z formą albo czasownik z formą z przeszłości. Pierwszy błąd daje podpowiedź, drugi pokazuje odpowiedź. Do misji trafia najwyżej 1 takie zadanie i najwyżej 1 zadanie „dobrze czy źle”. Po błędzie każde z nich może wrócić jako powtórka na końcu tej samej misji.'),
