@@ -1,1 +1,1 @@
-{"ver": "1.16", "date": "2026-10-18", "build": "6661c564fe7e", "notes": "Misje z poziomu 1 dają mniejsze nagrody niż wyższe poziomy."}
+{"ver": "1.17", "date": "2026-10-18", "build": "f59f467906fd", "notes": "Kruszce zależą od paska poziomu: co 20% paska o 1 kruszec mniej (najpierw najcenniejszy)."}
