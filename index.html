@@ -36,7 +36,9 @@
   --cloud:linear-gradient(transparent,transparent);
   --ground:linear-gradient(var(--grass) 0 30%,#8A5A35 30%);
 }
-*{box-sizing:border-box}
+*{box-sizing:border-box;font-variant-ligatures:none}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:manipulation}
+button,input,select,label,a{touch-action:manipulation}
 html{background-color:var(--sky)}
 body{
   min-height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));
@@ -363,6 +365,21 @@ p{margin:0}
 .rw-i>.pix{width:44px;height:48px}
 .rw-i>.pix.clap{width:44px;height:40px}
 .bonus.mile .pix{width:24px;height:22px}
+.rw-head{position:relative;display:flex;align-items:center;justify-content:center;width:100%;min-height:34px}
+.info-btn{position:absolute;right:0;top:50%;transform:translateY(-50%);width:34px;height:34px;display:grid;place-items:center;background:var(--diamond-soft);color:var(--diamond-ink);border:2px solid var(--outline);box-shadow:var(--bevel),0 2px 0 var(--outline);font-family:Georgia,"Times New Roman",serif;font-style:italic;font-weight:700;font-size:1.25rem;line-height:1}
+.info-btn:active{transform:translateY(calc(-50% + 2px));box-shadow:var(--bevel)}
+.rw-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;width:100%;max-width:calc(var(--cols) * 64px + (var(--cols) - 1) * 10px);margin:2px auto 0}
+.rw-cell{width:64px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px 6px;background:var(--panel);border:2px solid var(--outline);box-shadow:var(--bevel)}
+.rw-cell .pix{width:30px;height:30px}
+.rw-cell b{font-family:var(--f-pixel);font-weight:700;font-size:1.2rem;line-height:1}
+.rw-note{font-weight:700;color:var(--diamond-ink)}
+.info-body{display:flex;flex-direction:column;gap:10px;text-align:left}
+.info-list{display:flex;flex-direction:column;gap:8px}
+.info-row{display:flex;align-items:center;gap:12px;padding:8px 10px;background:var(--white);border:2px solid var(--outline);line-height:1.3}
+.info-row>.pix{width:28px;height:28px;flex:none}
+.info-row.got{background:var(--good-soft)}
+.info-row .tick{margin-left:auto;font-weight:800;color:var(--good);font-size:1.2rem}
+.rules .info-row{padding:6px 10px;font-size:.95rem}
 .kino-next{font-weight:700;margin:0 0 12px}
 .rw-i b{display:block;font-family:var(--f-pixel);font-weight:700;font-size:.95rem;color:var(--ink-soft)}
 .rw-i>span{font-weight:700;font-size:1.05rem}
@@ -384,11 +401,31 @@ p{margin:0}
 .fb-cre span{overflow-wrap:normal;word-break:normal;font-size:.72rem}
 .pix.hero svg{width:100%;height:100%}
 /* hero walking on the big grass strip at the bottom during a mission */
-.ground{position:relative}
+.ground{position:relative;overflow-x:clip}
+body{overflow-x:clip}
 .walk{position:absolute;left:max(16px, calc(50% - 264px));right:max(16px, calc(50% - 264px));bottom:calc(100% - 9px);height:110px;pointer-events:none}
 .walk-done{position:absolute;left:0;bottom:1px;height:4px;transition:width .8s steps(8,end);background:repeating-linear-gradient(90deg,#F2C230 0 4px,transparent 4px 14px,#F59BC7 14px 18px,transparent 18px 28px)}
-.walk-chest{position:absolute;right:0;bottom:2px}
-.walk-chest.open{animation:pop .6s steps(6,end)}
+.walk-chest{position:absolute;right:0;bottom:2px;z-index:1}
+.chest-lid{position:absolute;left:0;top:0;transform-origin:0 100%;z-index:2}
+.chest-base{position:absolute;left:0;bottom:0;z-index:1}
+.chest-glow{position:absolute;left:50%;top:40%;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:radial-gradient(circle,#FFFBE0 0,#F2C230 45%,rgba(242,194,48,0) 72%);opacity:0;z-index:0}
+.walk-chest.ready{animation:wiggle 1.6s steps(4,end) infinite}
+.walk-chest.opening{animation:shake .4s steps(4,end)}
+.walk-chest.opening .chest-lid{animation:lidopen .45s steps(5,end) .35s forwards}
+.walk-chest.opening .chest-glow{animation:glow 2.2s ease-out .55s forwards}
+.loot-fly{position:absolute;left:50%;top:30%;z-index:3;display:flex;align-items:center;gap:3px;opacity:0;white-space:nowrap;
+  font-family:var(--f-pixel);font-weight:700;font-size:1.15rem;color:var(--ink);text-shadow:2px 2px 0 var(--white);animation:lootfly 1.5s cubic-bezier(.2,.9,.3,1.2) var(--d,.8s) forwards}
+.loot-fly .pix{width:26px;height:26px}
+.loot-fly.cre-fly{top:auto;bottom:0;animation-name:crejump;animation-duration:1.3s;animation-timing-function:linear}
+.loot-fly.cre-fly .cre{width:44px;height:48px}
+@keyframes crejump{0%{opacity:0;transform:translate(-50%,-10px) scale(.3)}12%{opacity:1}45%{transform:translate(calc(-50% + var(--dx) * .5),-78px) scale(1)}80%{transform:translate(calc(-50% + var(--dx)),0) scale(1)}88%{transform:translate(calc(-50% + var(--dx)),-8px)}100%{opacity:1;transform:translate(calc(-50% + var(--dx)),0) scale(1)}}
+@keyframes wiggle{0%,70%,100%{transform:rotate(0)}80%{transform:rotate(-4deg)}90%{transform:rotate(4deg)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-2px)}}
+@keyframes lidopen{to{transform:translate(-4px,-12px) rotate(-32deg)}}
+@keyframes glow{0%{opacity:0;transform:scale(1)}35%{opacity:1;transform:scale(9)}100%{opacity:.9;transform:scale(7)}}
+@keyframes lootfly{0%{opacity:0;transform:translate(-50%,0) scale(.3)}15%{opacity:1}65%{transform:translate(calc(-50% + var(--dx)),var(--dy)) scale(1.1)}100%{opacity:1;transform:translate(calc(-50% + var(--dx)),var(--dy)) scale(1)}}
+#scr-lesson.ending{pointer-events:none}
+#scr-lesson.ending .next-bar .btn{filter:saturate(.6) brightness(1.05)}
 .walk-hero{position:absolute;bottom:0;z-index:1;transition:left .8s steps(8,end)}
 .walk-hero.hop{animation:hop .8s steps(8,end)}
 .walk-hero.oops{animation:oops .45s steps(6,end)}
@@ -505,8 +542,9 @@ body.walking .app{padding-bottom:80px}
 const DAY=864e5, INT=[0,0,1,3,7,16], LS='wdj-progress-v1';
 /* ---------- app version: add a line at the top of CHANGES with every update (newest first).
    Version number = 1.(number of entries − 1). BUILD is filled in by tools/build.py. ---------- */
-const BUILD='9221f8e62de0';
+const BUILD='c17d7131ad18';
 const CHANGES=[
+ ['2026-10-18','Czytelna tabela nagród z przyciskiem „i”, animacja otwierania skrzyni na końcu misji, poprawiony napis „filmik”, bez przypadkowego powiększania ekranu.'],
  ['2026-10-18','Zadanie w pary i „dobrze czy źle” po błędzie znów wraca jako powtórka na końcu misji (limit 1 dotyczy tylko układania misji).'],
  ['2026-10-18','Najwyżej 1 zadanie „połącz w pary” i 1 zadanie „dobrze czy źle” na misję.'],
  ['2026-10-18','Bohater idzie po dużym pasie trawy na dole ekranu. Najwyżej 2 zadania w pary na misję. Naprawiona luka w zdaniu. Kolory nad bohaterem w jego panelu.'],
@@ -544,6 +582,7 @@ function pixSvg(rows,pal){const w=rows[0].length,hh=rows.length;let r='';
   rows.forEach((row,y)=>{let x=0;while(x<row.length){const k=row[x];let n=1;while(x+n<row.length&&row[x+n]===k)n++;if(pal[k])r+='<rect x="'+x+'" y="'+y+'" width="'+n+'" height="1" fill="'+pal[k]+'"/>';x+=n;}});
   return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+w+' '+hh+'" shape-rendering="crispEdges">'+r+'</svg>';}
 function pix(rows,pal,cls){const s=document.createElement('span');s.className='pix'+(cls?' '+cls:'');s.setAttribute('aria-hidden','true');s.innerHTML=pixSvg(rows,pal);return s;}
+const noLig=(t)=>String(t).replace(/f(?=[filt])/g,'f\u200C');/* canvas text cannot switch off the pixel font's fi/fl ligatures */
 const uri=(svg)=>'url("data:image/svg+xml,'+encodeURIComponent(svg)+'")';
 const GEM=['..oooo..','.obbaao.','obbaaaco','oaaaacco','.oaaaco.','..oaco..','...oo...'];
 const GEM_P={o:'#15606B',a:'#3FC8D6',b:'#C8F6FA',c:'#2296A6'};
@@ -873,8 +912,8 @@ function mkH(c,cast,kind,t){
       c.fillStyle='#25211B';c.textAlign='left';c.textBaseline='middle';c.fillText(text,bx+7,by+hh/2+1);c.restore();},
     cap(text){c.save();c.font='700 12px Andika, Verdana, sans-serif';c.fillStyle='rgba(20,18,15,.75)';c.fillRect(0,CH-24,CW,24);c.fillStyle='#FFFFFF';c.textAlign='center';c.textBaseline='middle';c.fillText(text,CW/2,CH-12);c.restore();},
     word(text,x,y,p){const s=p<.3?lerp(.4,1.25,p/.3):p<.5?lerp(1.25,1,(p-.3)/.2):1;c.save();c.globalAlpha=p>.8?Math.max(0,(1-p)/.2):1;c.translate(x,y);c.scale(s,s);
-      c.font='700 26px "Pixelify Sans", Andika, monospace';c.textAlign='center';c.textBaseline='middle';c.lineWidth=5;c.strokeStyle='#2E2A24';c.strokeText(text,0,0);c.fillStyle='#FFD54A';c.fillText(text,0,0);c.restore();},
-    txt(text,x,y,size,color,alpha){c.save();c.globalAlpha=Math.max(0,Math.min(1,alpha==null?1:alpha));c.font='700 '+size+'px "Pixelify Sans", Andika, monospace';c.textAlign='center';c.textBaseline='middle';c.fillStyle=color;c.fillText(text,x,y);c.restore();},
+      c.font='700 26px "Pixelify Sans", Andika, monospace';c.textAlign='center';c.textBaseline='middle';c.lineWidth=5;c.strokeStyle='#2E2A24';text=noLig(text);c.strokeText(text,0,0);c.fillStyle='#FFD54A';c.fillText(text,0,0);c.restore();},
+    txt(text,x,y,size,color,alpha){c.save();c.globalAlpha=Math.max(0,Math.min(1,alpha==null?1:alpha));c.font='700 '+size+'px "Pixelify Sans", Andika, monospace';c.textAlign='center';c.textBaseline='middle';c.fillStyle=color;c.fillText(noLig(text),x,y);c.restore();},
     dizzy(x,y,tt){c.save();c.fillStyle='#FFD54A';for(let i=0;i<3;i++){const a=tt*4+i*2.09,px=Math.round(x+Math.cos(a)*18),py=Math.round(y+Math.sin(a)*5);c.fillRect(px-1,py-4,3,9);c.fillRect(px-4,py-1,9,3);}c.restore();},
     burst(x,y,p,cols,n,dist){c.save();c.globalAlpha=Math.max(0,1-p);for(let i=0;i<n;i++){const a=i/n*Math.PI*2+(i%3)*.3,d=p*dist*(.6+(i%4)*.15);c.fillStyle=cols[i%cols.length];c.fillRect(Math.round(x+Math.cos(a)*d)-2,Math.round(y+Math.sin(a)*d+p*p*30)-2,4,4);}c.restore();},
     confetti(tt){const cols=['#E5484D','#F2C230','#3FC8D6','#4E922A','#F59BC7','#8458C8'];for(let i=0;i<40;i++){const x=((i*67)%CW)+Math.sin(tt*3+i)*8,y=-10+((tt*70+i*23)%(CH+20));c.fillStyle=cols[i%6];c.fillRect(Math.round(x),Math.round(y),4,6);}},
@@ -1192,7 +1231,7 @@ function drawClip(c,idx,t,cast,k){
   clipBg(c,clip.bg,t);
   try{clip.draw(mkH(c,cast,clip.bg,t),t);}catch(e){}
   if(t<2.2){c.save();c.globalAlpha=t<1.6?1:Math.max(0,1-(t-1.6)/.6);c.fillStyle='rgba(20,18,15,.78)';c.fillRect(0,0,CW,26);c.fillStyle='#FFFFFF';
-    c.font='700 14px "Pixelify Sans", Andika, monospace';c.textAlign='center';c.textBaseline='middle';c.fillText('Odcinek '+(idx+1)+': '+clip.title,CW/2,13);c.restore();}
+    c.font='700 14px "Pixelify Sans", Andika, monospace';c.textAlign='center';c.textBaseline='middle';c.fillText(noLig('Odcinek '+(idx+1)+': '+clip.title),CW/2,13);c.restore();}
 }
 let AC=null;
 function sfx(kind){if(!st.sound)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();const t=AC.currentTime;
@@ -1263,7 +1302,7 @@ function drawForge(c,t,wid,mat,smith,k){
     H.spr(troC(wid,mat),ax,92+8*s+(t>R+1?Math.sin(t*2.2)*3:0),{s,rot:Math.sin(t*1.6)*.08});
     for(let i=0;i<5;i++)H.sparkle(ax+Math.cos(t*1.2+i*1.26)*70,92+Math.sin(t*1.2+i*1.26)*44,t+i);
     if(t>=R+.7){c.save();c.globalAlpha=Math.min(1,(t-R-.7)*3);c.font='700 20px "Pixelify Sans", Andika, monospace';c.textAlign='center';c.textBaseline='middle';
-      c.lineWidth=5;c.strokeStyle='#14110D';const name=tName(ITEM[wid],mat)+'!';c.strokeText(name,ax,CH-16);c.fillStyle=M.L;c.fillText(name,ax,CH-16);c.restore();}
+      c.lineWidth=5;c.strokeStyle='#14110D';const name=noLig(tName(ITEM[wid],mat)+'!');c.strokeText(name,ax,CH-16);c.fillStyle=M.L;c.fillText(name,ax,CH-16);c.restore();}
   }
 }
 function startForgePlay(cv,wid,mat,btn,title,onShown,onEnd){
@@ -1695,8 +1734,8 @@ function levelRow(n){
            :h('div',{class:'lv locked'},kids);
 }
 
-function startLesson(level){S={items:buildSession(level),i:0,level:level||0,t0:Date.now(),met:[],newMet:[],lastCre:-1,combo:0,loot:{}};if(!S.items.length){go('home');return;}go('lesson');}
-function endEarly(){const any=S&&S.items.some(x=>x.mode!=='retry'&&x.state==='done');if(any)finishSession(false);else go('home');}
+function startLesson(level){chestSeq++;$('#scr-lesson').classList.remove('ending');S={items:buildSession(level),i:0,level:level||0,t0:Date.now(),met:[],newMet:[],lastCre:-1,combo:0,loot:{}};if(!S.items.length){go('home');return;}go('lesson');}
+function endEarly(){if(!S){go('home');return;}const any=S&&S.items.some(x=>x.mode!=='retry'&&x.state==='done');if(any)finishSession(false);else go('home');}
 
 function timeline(c,it){
   const middle=(c.time==='usual'||(c.t==='when'&&c.l>=6))?'usual':'now';
@@ -1864,7 +1903,7 @@ function feedbackEl(c,it){
 }
 function creBlock(it){const i=it.cre==null?0:it.cre;return h('div',{class:'fb-cre'},creEl(i),h('span',null,ALL[i].name));}
 function newCreLine(it){return it.creNew?h('p',{class:'new-cre'},'Nowy stworek w albumie: '+ALL[it.cre].name+'!'):null;}
-function next(){S.i++;if(S.i>=S.items.length)finishSession(true);else{renderLesson();window.scrollTo(0,0);}}
+function next(){if(!S||S.ending)return;if(S.i+1>=S.items.length){S.ending=true;S.i++;finishSession(true);}else{S.i++;renderLesson();window.scrollTo(0,0);}}
 
 function introCard(l,onGo){
   const d=INTRO[l];
@@ -1921,8 +1960,11 @@ function finishSession(completed){
     h('div',{class:'loot','aria-label':'Za pierwszym razem: '+f+' z '+n},base.map((x,i)=>{const el=h('span',{class:x.first?'hit':'miss'});el.style.animationDelay=(i*70)+'ms';return el;})),
     h('div',{class:'sum-lines'},
       h('p',null,h('strong',null,'Za pierwszym razem: '+f+' z '+n)),
-      completed?h('div',{class:'rewards'},h('p',{class:'label'},'Nagroda za misję'),rewards.map(([k,cnt,why])=>h('p',{class:'bonus'},minEl(k),'+'+cnt+' '+MIN[k].name.toLowerCase()+' za '+why)),
-        newClips?h('p',{class:'bonus mile'},pix(CLAP,CLAP_P),'Kamień milowy: '+miles.map(m=>m.name.toLowerCase()).join(', ')+'! '+(newClips>1?newClips+' nowe filmiki':'Nowy filmik')+' w kinie.'):null):
+      completed?h('div',{class:'rewards'},
+        h('div',{class:'rw-head'},h('p',{class:'label'},'Nagroda za misję'),
+          h('button',{class:'info-btn',type:'button','aria-label':'Za co ta nagroda?',title:'Za co ta nagroda?',onclick:()=>showRewardInfo(rewards,miles,newClips)},'i')),
+        rwGrid(rewards.map(([k,cnt])=>[minEl(k),'+'+cnt,MIN[k].name]).concat(newClips?[[pix(CLAP,CLAP_P,'clap'),'+'+newClips,newClips>1?'Nowe filmiki':'Nowy filmik']]:[])),
+        newClips?h('p',{class:'rw-note'},(newClips>1?'Nowe filmiki':'Nowy filmik')+' w kinie!'):null):
         h('p',null,'Misja nie jest skończona, więc tym razem bez kruszców, stworków, medali i filmików. Postęp w zdaniach jest zapisany.'),
       hint?h('p',{class:'muted'},hint):null,
       completed&&ratio<.5?h('p',{class:'muted'},'Stworek i filmik wpadają, gdy co najmniej połowa odpowiedzi jest dobra za pierwszym razem.'):null,
@@ -1933,7 +1975,9 @@ function finishSession(completed){
     clipIdx>=0?h('button',{class:'btn primary big',type:'button',onclick:()=>openReward(newMedals.concat(clipNew?miles.map(m=>Object.assign({kind:'mile'},m)):[]),clipIdx,clipNew,()=>go('home'))},'Otwórz filmik'):null,
     canForgeAny()?h('button',{class:'btn secondary',type:'button',onclick:()=>go('forge')},'Masz kruszce. Idź do kuźni!'):null,
     h('button',{class:clipIdx>=0?'btn secondary':'btn primary big',type:'button',onclick:()=>go('home')},'Wróć do bazy')));
-  S=null;go('sum');
+  const chestLoot=completed&&n?rewards.map(([k,cnt])=>[minEl(k),'+'+cnt]).concat(newClips?[[pix(CLAP,CLAP_P,'clap'),'+'+newClips]]:[]):null;
+  S=null;
+  if(chestLoot&&cur==='lesson')openChest(chestLoot,caught>=0?creEl(caught):null,()=>{if(cur==='lesson')go('sum');});else go('sum');
 }
 
 /* ---------- cheat sheet ---------- */
@@ -1961,6 +2005,25 @@ function renderSheet(){
 }
 
 /* ---------- rewards UI ---------- */
+function rwGrid(cells){const n=cells.length,cols=n<=4?n:3;
+  return h('div',{class:'rw-grid',style:'--cols:'+Math.max(1,cols)},cells.map(([icon,txt,name])=>h('div',{class:'rw-cell',role:'img','aria-label':name+' '+txt,title:name},icon,h('b',null,txt))));}
+function showInfo(title,body){
+  closeOverlay();const done=()=>closeOverlay();
+  const btn=h('button',{class:'btn primary big ovl-next',type:'button',onclick:done},'Zamknij');
+  const ov=h('div',{class:'ovl',role:'dialog','aria-modal':'true','aria-label':title,onclick:e=>{if(e.target===ov)done();}},
+    h('div',{class:'card ovl-card info-card'},h('p',{class:'clip-title'},title),body,btn));
+  ov.addEventListener('keydown',e=>{if(e.key==='Escape')done();});
+  document.body.append(ov);OV=ov;try{btn.focus({preventScroll:true});}catch(e){}}
+const REWARD_RULES=[['miedz','+2','za każdą ukończoną misję'],['zelazo','+1','gdy co najmniej 70% odpowiedzi jest dobrych za pierwszym razem'],
+  ['zloto','+1','gdy co najmniej 85% odpowiedzi jest dobrych za pierwszym razem'],['diament','+1','za misję bez żadnego błędu (co najmniej 6 zadań)'],
+  ['szmaragd','+1','gdy pamiętasz co najmniej 3 stare zdania z powtórek'],['ametyst','+1','za pierwszą misję dnia']];
+function showRewardInfo(rewards,miles,newClips){
+  const got={};for(const [k,cnt] of rewards)got[k]=cnt;
+  showInfo('Za co ta nagroda?',h('div',{class:'info-body'},
+    h('p',{class:'muted'},'Zielone kruszce zdobyłeś w tej misji.'),
+    h('div',{class:'info-list'},REWARD_RULES.map(([k,cnt,why])=>h('div',{class:'info-row'+(got[k]?' got':'')},minEl(k),
+      h('span',null,h('b',null,MIN[k].name+' '+cnt),' '+why),got[k]?h('span',{class:'tick',title:'Zdobyte w tej misji'},'✓'):null)),
+      newClips?h('div',{class:'info-row got'},pix(CLAP,CLAP_P,'clap'),h('span',null,h('b',null,(newClips>1?newClips+' nowe filmiki':'Nowy filmik')+' w kinie'),' za kamień milowy: '+miles.map(m=>m.name.toLowerCase()).join(', ')+'.'),h('span',{class:'tick'},'✓')):null)));}
 function rwItem(it){
   if(it.kind==='trophy'){const w=ITEM[it.w];return h('div',{class:'rw-i'},trophyEl(it.w,it.mat),h('span',null,h('b',null,'Nowe trofeum'),tName(w,it.mat)));}
   if(it.kind==='mile')return h('div',{class:'rw-i'},pix(CLAP,CLAP_P,'clap'),h('span',null,h('b',null,'Kamień milowy · nowy filmik'),it.name));
@@ -2069,6 +2132,30 @@ function renderHero(){
   r.append(h('button',{class:cf?'btn primary big':'btn secondary',type:'button',onclick:()=>go('forge')},cf?'Masz kruszce. Idź do kuźni!':'Idź do kuźni'));
 }
 /* ---------- the hero walks along the big grass strip at the bottom during a mission ---------- */
+function chestEl(sc,cls){const w=12*sc,el=h('span',{class:'walk-chest'+(cls?' '+cls:'')});el.style.width=w+'px';el.style.height=(9*sc)+'px';
+  const lid=pix(PROPS.chestLid.rows,PROPS.chestLid.pal,'chest-lid'),base=pix(PROPS.chestBase.rows,PROPS.chestBase.pal,'chest-base');
+  lid.style.width=w+'px';lid.style.height=(4*sc)+'px';base.style.width=w+'px';base.style.height=(5*sc)+'px';
+  el.append(h('i',{class:'chest-glow'}),base,lid);return el;}
+/* the mission is over: the hero reaches the chest, it opens and the loot jumps out; then the summary */
+let chestSeq=0;
+function openChest(loot,creature,done){
+  const my=++chestSeq;
+  const w=document.getElementById('walk'),ch=w&&!w.hidden&&w.querySelector('.walk-chest'),lesson=$('#scr-lesson');
+  if(!ch){done();return;}
+  let reduce=false;try{reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
+  lesson.classList.add('ending');
+  try{window.scrollTo({top:document.documentElement.scrollHeight,behavior:reduce?'auto':'smooth'});}catch(e){window.scrollTo(0,document.documentElement.scrollHeight);}
+  const hero=w.querySelector('.walk-hero');if(hero){hero.classList.remove('hop','oops');void hero.offsetWidth;hero.classList.add('hop');}
+  ch.classList.remove('ready');ch.classList.add('opening');
+  const n=loot.length,cx=ch.offsetLeft+ch.offsetWidth/2,step=Math.max(40,Math.min(62,(cx-10)/Math.max(1,n)));
+  loot.forEach(([icon,txt],i)=>{const f=h('span',{class:'loot-fly'},icon,txt?h('b',null,txt):null);
+    f.style.setProperty('--dx',(-Math.round(8+i*step))+'px');f.style.setProperty('--dy',(-Math.round(98+(i%2)*24))+'px');
+    f.style.setProperty('--d',(.8+i*.18).toFixed(2)+'s');ch.append(f);});
+  if(creature){const f=h('span',{class:'loot-fly cre-fly'},creature),hx=hero?hero.offsetLeft:cx-80;
+    f.style.setProperty('--dx',(Math.round(hx-30-cx))+'px');f.style.setProperty('--d',(.9+n*.18).toFixed(2)+'s');ch.append(f);}
+  setTimeout(()=>sfx('clink'),350);setTimeout(()=>sfx('pop'),800);if(creature)setTimeout(()=>sfx('boing'),(900+n*180));setTimeout(()=>sfx('fanfare'),1100+n*180);
+  setTimeout(()=>{if(my!==chestSeq)return;lesson.classList.remove('ending');done();},reduce?600:2700+n*180);
+}
 function walkScale(){return innerWidth>=700?4:3;}
 function updateWalker(){
   const g=document.querySelector('.ground');if(!g)return;
@@ -2083,7 +2170,7 @@ function updateWalker(){
   const from=S.trailP==null?p:S.trailP;hero.style.left=at(from);
   if(done&&it.correct&&!it.hop){it.hop=true;hero.classList.add('hop');}
   else if(it&&(it.state==='hint'||(done&&!it.correct))&&!it.oops){it.oops=true;hero.classList.add('oops');}
-  const chest=pix(CHEST,CHEST_P,'walk-chest'+(p>=1?' open':''));chest.style.width=cw+'px';chest.style.height=(8*sc)+'px';
+  const chest=chestEl(sc,p>=1?'ready':'');
   const fl=h('i',{class:'walk-done'});fl.style.width=(from*100).toFixed(2)+'%';
   w.replaceChildren(fl,chest,hero);
   if(from!==p)requestAnimationFrame(()=>requestAnimationFrame(()=>{hero.style.left=at(p);fl.style.width=(p*100).toFixed(2)+'%';}));
