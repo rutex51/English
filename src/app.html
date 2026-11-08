@@ -523,6 +523,12 @@ body.walking .app{padding-bottom:80px}
 }
 
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+/* lekcje podstawowe: nowe typy zadań */
+.opt.long{grid-column:1/-1;font-size:1.08rem;text-align:left;min-height:52px}
+.opt.sel{background:var(--diamond-soft);color:var(--diamond-ink);box-shadow:var(--bevel);transform:translateY(3px)}
+.task-stack{display:flex;flex-direction:column;gap:14px}
+.flow-arrow{font-weight:700;color:var(--ink-soft);font-size:1.2rem}
+.answer-line .tile{overflow-wrap:anywhere}
 </style>
 
 <div class="app">
@@ -547,6 +553,7 @@ const DAY=864e5, INT=[0,0,1,3,7,16], LS='wdj-progress-v1';
    Version number = 1.(number of entries − 1). BUILD is filled in by tools/build.py. ---------- */
 const BUILD='__BUILD__';
 const CHANGES=[
+ ['2026-11-08','Lekcja podstawowa „Where does food come from?” (poziom 0, dostępna od początku): pytania z testu Unit 1 Review i słownictwo z rozdziału. Nowe zadania: wybór dwóch odpowiedzi, dwa wybory w zdaniu, układanie kolejności i „co myślisz?”.'],
  ['2026-10-18','Kruszce zależą od paska poziomu: co 20% paska o 1 kruszec mniej (najpierw najcenniejszy).'],
  ['2026-10-18','Misje z poziomu 1 dają mniejsze nagrody niż wyższe poziomy.'],
  ['2026-10-18','Krótsza pauza po wylądowaniu łupu: podsumowanie po 1 sekundzie.'],
@@ -615,7 +622,7 @@ const CRE={
    pal:{o:'#1E2230',k:'#2B3245',w:'#FFFFFF',e:'#1A1A1A',y:'#F2A93B',r:'#D9473A'}},
  raccoon:{name:'Szop Szymek',rows:['oo........oo','ogo......ogo','oggooooooggo','oggggggggggo','ogmmmggmmmgo','ommwkmmkwmmo','ommmmwwmmmmo','oggwwwwwwggo','oggwwnnwwggo','.oggwwwwggo.','..ooggggoo..','....oooo....'],
    pal:{o:'#2E2A24',g:'#9AA0A8',m:'#3A3D45',w:'#F1EEE8',k:'#111111',n:'#222222'}}};
-const LV_CRE={1:'owl',2:'hedgehog',3:'mole',4:'robot',5:'penguin',6:'raccoon',7:'mole',8:'robot'};
+const LV_CRE={1:'owl',2:'hedgehog',3:'mole',4:'robot',5:'penguin',6:'raccoon',7:'mole',8:'robot',9:'mole'};
 function cre(l,cls){const k=CRE[LV_CRE[l]||'owl'];return pix(k.rows,k.pal,'cre'+(cls?' '+cls:''));}
 const creName=(l)=>CRE[LV_CRE[l]||'owl'].name;
 
@@ -829,6 +836,7 @@ const MEDALS=[
  {id:'p6',name:'Poziom 6 opanowany',desc:'I play · she plays: 60% zdań w pudełku 3 lub wyżej.',tier:'s',rib:RIB.lev,test:()=>lvDone(6)},
  {id:'p7',name:'Poziom 7 opanowany',desc:'played · went: 60% zdań w pudełku 3 lub wyżej.',tier:'s',rib:RIB.lev,test:()=>lvDone(7)},
  {id:'p8',name:'Mistrz czasów',desc:'Poziom 8 (will play): 60% zdań w pudełku 3 lub wyżej.',tier:'g',rib:RIB.lev,test:()=>lvDone(8)},
+ {id:'p9',name:'Znawca jedzenia',desc:'Poziom 0 (Where does food come from?): 60% zadań w pudełku 3 lub wyżej.',tier:'b',rib:RIB.lev,test:()=>lvDone(9)},
  {id:'a10',name:'Zbieracz',desc:'10 stworków w albumie.',tier:'b',rib:RIB.alb,test:()=>albumCount()>=10},
  {id:'a25',name:'Łowca stworków',desc:'25 stworków w albumie.',tier:'s',rib:RIB.alb,test:()=>albumCount()>=25},
  {id:'a50',name:'Pełny album',desc:'Wszystkie 50 stworków.',tier:'g',rib:RIB.alb,test:()=>albumCount()>=50},
@@ -842,7 +850,7 @@ function lvDone(l){const p=lvStats(l);return p.total>0&&p.mastered/p.total>=0.6;
 function checkMedals(){const out=[];for(const md of MEDALS){if(st.medals[md.id])continue;let ok=false;try{ok=md.test();}catch(e){}if(ok){st.medals[md.id]=Date.now();out.push(md);}}return out;}
 /* milestones: each one unlocks one new clip (12 mission counts + 8 mastered levels = 20 clips) */
 const MILE_N=[1,5,10,15,20,30,40,50,60,75,90,100];
-const MILES=MILE_N.map(n=>({id:'s'+n,n,name:n===1?'Pierwsza misja':n+' misji'})).concat([1,2,3,4,5,6,7,8].map(l=>({id:'p'+l,l,name:'Poziom '+l+' opanowany'})));
+const MILES=MILE_N.map(n=>({id:'s'+n,n,name:n===1?'Pierwsza misja':n+' misji'})).concat([1,2,3,4,5,6,7,8,9].map(l=>({id:'p'+l,l,name:'Poziom '+(l===9?0:l)+' opanowany'})));
 function checkMiles(){const out=[];for(const m of MILES){if(st.mile[m.id])continue;let ok=false;try{ok=m.n?(st.stats.sessions||0)>=m.n:lvDone(m.l);}catch(e){}if(ok){st.mile[m.id]=Date.now();out.push(m);}}return out;}
 function unlockNextClip(){for(let i=0;i<CLIPS.length;i++)if(!st.clips[i]){st.clips[i]=Date.now();return i;}return -1;}
 function pickRepeatClip(){const have=Object.keys(st.clips).map(Number).filter(i=>i>=0&&i<CLIPS.length);if(!have.length)return -1;
@@ -850,7 +858,7 @@ function pickRepeatClip(){const have=Object.keys(st.clips).map(Number).filter(i=
 function nextMileText(){if(Object.keys(st.clips).length>=CLIPS.length)return 'Masz już wszystkie filmiki!';
   const s=st.stats.sessions||0,nm=MILES.find(m=>m.n&&!st.mile[m.id]&&m.n>s),lv=MILES.find(m=>m.l&&!st.mile[m.id]),parts=[];
   if(nm){const k=nm.n-s;parts.push('za '+k+' '+plural(k,'misję','misje','misji'));}
-  if(lv)parts.push('po opanowaniu poziomu '+lv.l);
+  if(lv)parts.push('po opanowaniu poziomu '+lvLab(lv.l));
   return parts.length?'Następny nowy filmik: '+parts.join(' albo ')+'.':'';}
 const comboMin=n=>n>=7?'diament':n>=5?'zloto':n>=3?'zelazo':'miedz';
 function addMin(k,n){st.min[k]=(st.min[k]||0)+n;st.stats.mined=(st.stats.mined||0)+n;if(S&&S.loot)S.loot[k]=(S.loot[k]||0)+n;}
@@ -1395,7 +1403,12 @@ const J=(id,s,a,fix,time,pl,x)=>({id,t:'judge',s,a,fix,time,pl,x});
 const B=(id,a,d,time,pl,hh,x)=>({id,t:'build',a:a.split(' '),d:d?d.split(' '):[],time,pl,h:hh,x});
 const SP=(id,s,o,a,time,pl,hh,x,cue)=>({id,t:'spell',s,o,a,time,pl,h:hh,x,cue});
 const LT=(id,s,word,time,pl,hh,x)=>({id,t:'letters',s,a:word.split(''),d:[],time,pl,h:hh,x});
-const MT=(id,pairs,time,q,hh,x)=>({id,t:'match',p:pairs,time,q,h:hh,x,pl:''});
+const MT=(id,pairs,time,q,hh,x,ex)=>Object.assign({id,t:'match',p:pairs,time,q,h:hh,x,pl:''},ex||{});
+const MU=(id,s,o,a,time,pl,hh,x,ex)=>Object.assign({id,t:'multi',s,o,a,time,pl,h:hh,x},ex||{});
+const TW=(id,s,o,a,time,pl,hh,x,ex)=>Object.assign({id,t:'two',s,o,a,time,pl,h:hh,x},ex||{});
+const OR=(id,s,a,time,pl,hh,x,ex)=>Object.assign({id,t:'order',s,a,d:[],time,pl,h:hh,x},ex||{});
+const TH=(id,s,o,a,pl,hh,x,ex)=>Object.assign({id,t:'think',s,o,a,feel:['Yes','No / Not sure'],time:'usual',pl,h:hh,x},ex||{});
+const TQ={tag:'Z testu',q:'Circle the correct country and decide: near or far? (Wybierz kraj oraz: blisko czy daleko.)'};
 
 const BANK={
 1:[
@@ -1565,6 +1578,76 @@ const BANK={
  P('8p5','Tomorrow it _.',['will rain','rained','rains'],'will rain','future','Jutro będzie padać.','Tomorrow → …?','jutro → will rain.'),
  J('8j2','Tomorrow we will go swimming.',true,'','future','Jutro pójdziemy pływać.','will + go. Dobrze!'),
  B('8b2','Next year I will be nine','am','future','W przyszłym roku będę miał (miała) dziewięć lat.','Zacznij od „Next year”. Potem kto i „będę”.','przyszłość → will be.')
+],
+9:[
+ Object.assign(MT('rt2',[['Eggs','A chicken'],['Carrots','The ground'],['Oranges','A tree']],'usual','Where does food come from? Match the food to its source. (Połącz jedzenie z tym, skąd pochodzi.)','Jajka znosi kura. Marchewka rośnie w ziemi. Pomarańcze rosną na drzewie.','Eggs → a chicken · carrots → the ground · oranges → a tree.'),{tag:'Z testu'}),
+ P('r01','A _ grows food on a farm.',['farmer','chef','truck'],'farmer','usual','Rolnik uprawia jedzenie na farmie.','Kto pracuje na farmie?','farmer = rolnik.'),
+ TW('rt3a','Pierogi come from _ and come from _.',[['Poland','Italy','Brazil','China'],['near','far']],['Poland','near'],'usual','Pierogi pochodzą z … i są z … (blisko albo daleko).','Pierogi to polskie danie. Czy Polska jest blisko twojego domu?','Pierogi → Poland → near.',TQ),
+ P('r02','A _ cooks food in a restaurant.',['chef','farmer','ship'],'chef','usual','Kucharz gotuje jedzenie w restauracji.','Kto gotuje w restauracji?','chef = kucharz.'),
+ MU('rt1','How can we learn about food?',['Visit a farm','Watch TV','Play a computer game','Ask a shopkeeper'],['Visit a farm','Ask a shopkeeper'],'usual','Jak możemy dowiedzieć się czegoś o jedzeniu?','Gdzie zobaczysz jedzenie z bliska? Kogo możesz o nie zapytać?','Visit a farm · Ask a shopkeeper. Na farmie zobaczysz, jak rośnie jedzenie, a sprzedawca powie, skąd je ma.',{tag:'Z testu',q:'Circle two ways. (Zaznacz dwa sposoby.)'}),
+ P('r03','The _ takes vegetables to the market.',['truck','bowl','label'],'truck','usual','Ciężarówka wiezie warzywa na targ.','Co jeździ po drodze?','truck = ciężarówka · market = targ.'),
+ TW('rt3b','Coffee comes from _ and comes from _.',[['Poland','Colombia','Egypt','Japan'],['near','far']],['Colombia','far'],'usual','Kawa pochodzi z … i jest z … (blisko albo daleko).','Kawa rośnie w bardzo ciepłych miejscach. Szukaj kraju w Ameryce Południowej.','Coffee → Colombia → far.',TQ),
+ OR('rt4','The journey of milk from a farm to your table.',['farm','milk','shop','home','drink'],'usual','Droga mleka z farmy na twój stół.','Gdzie wszystko się zaczyna? Co robisz z mlekiem na samym końcu, w domu?','farm → milk → shop → home → drink.',{tag:'Z testu',q:'Complete the steps in the correct order. (Ułóż kroki po kolei.)'}),
+ TW('rt3c','Rice comes from _ and comes from _.',[['Poland','India','Spain','Canada'],['near','far']],['India','far'],'usual','Ryż pochodzi z … i jest z … (blisko albo daleko).','Ryż to ważne jedzenie w Azji. Który z tych krajów leży w Azji?','Rice → India → far.',TQ),
+ TH('rt5','Is it important to eat different kinds of food?',['Different foods give our bodies different nutrients.','Food is only for playing.','We only need to eat sweets.'],'Different foods give our bodies different nutrients.','Czy ważne jest, żeby jeść różne rodzaje jedzenia?','Nutrients to składniki odżywcze. Organizm potrzebuje wielu różnych.','Różne jedzenie daje organizmowi różne składniki odżywcze.',{tag:'Z testu'}),
+ TW('rt3d','Cheese comes from _ and comes from _.',[['Poland','Mexico','Australia','Thailand'],['near','far']],['Poland','near'],'usual','Ser pochodzi z … i jest z … (blisko albo daleko).','Ser robi się z mleka. Czy w twoim kraju są krowy?','Cheese → Poland → near.',TQ),
+ TH('rt6','Is it a good idea to grow food in your local area?',['Local food can travel a shorter distance.','Local food always comes from another country.','Farmers do not grow food.'],'Local food can travel a shorter distance.','Czy dobrym pomysłem jest uprawianie jedzenia w twojej okolicy?','Local znaczy „z okolicy”. Distance to odległość.','Jedzenie z okolicy podróżuje na krótszą odległość.',{tag:'Z testu'}),
+
+ P('r04','A _ carries food across the sea.',['ship','tractor','cup'],'ship','usual','Statek przewozi jedzenie przez morze.','Co pływa po morzu?','ship = statek.'),
+ P('r05','Some fruit travels on a _.',['plane','plate','crate'],'plane','usual','Niektóre owoce podróżują samolotem.','Co lata w powietrzu?','plane = samolot.'),
+ P('r06','The farmer drives a _ on the farm.',['tractor','boat','cup'],'tractor','usual','Rolnik jeździ traktorem po farmie.','Czym jeździ rolnik?','tractor = traktor.'),
+ P('r07','The workers put the oranges in a _.',['crate','cup','label'],'crate','usual','Pracownicy wkładają pomarańcze do skrzynki.','W czym przewozi się owoce?','workers = pracownicy · crate = skrzynka.'),
+ MT('rm1',[['Honey','Turkey'],['Cashew nuts','Sri Lanka'],['Butter','New Zealand'],['Rice','India']],'usual','Co jest na etykiecie? Połącz jedzenie z krajem.','Przypomnij sobie etykiety i mapę z książki.','Honey → Turkey · cashew nuts → Sri Lanka · butter → New Zealand · rice → India.'),
+ P('r08','I eat my porridge from a _.',['bowl','truck','label'],'bowl','usual','Jem owsiankę z miski.','Z czego je się owsiankę?','bowl = miska.'),
+ P('r09','I drink milk from a _.',['cup','plate','crate'],'cup','usual','Piję mleko z kubka.','Z czego się pije?','cup = kubek.'),
+ P('r10','There is a pancake on my _.',['plate','cup','boat'],'plate','usual','Na moim talerzu jest naleśnik.','Na czym leży jedzenie?','plate = talerz.'),
+ MU('rm2','Which two are vegetables?',['leek','spinach','mango','honey'],['leek','spinach'],'usual','Które dwa to warzywa?','Mango to owoc, a miód robią pszczoły.','leek = por · spinach = szpinak.'),
+ P('r11','We make porridge with _.',['oats','peas','cashews'],'oats','usual','Owsiankę robimy z płatków owsianych.','Porridge to owsianka. Z czego się ją robi?','oats = płatki owsiane.'),
+ P('r12','We make pancakes with _.',['flour','leeks','peas'],'flour','usual','Naleśniki robimy z mąki.','Co jest białe i sypkie?','flour = mąka.'),
+ P('r13','Bees make _.',['honey','butter','flour'],'honey','usual','Pszczoły robią miód.','Co robią pszczoły?','honey = miód.'),
+ P('r14','Add a _ of salt.',['pinch','truck','crate'],'pinch','usual','Dodaj szczyptę soli.','Soli dodaje się bardzo mało.','pinch of salt = szczypta soli.'),
+ MT('rm3',[['potato','ziemniak'],['cauliflower','kalafior'],['scallion','dymka'],['bitter gourd','gorzki melon']],null,'Połącz słowo z tłumaczeniem.','Które znasz na pewno? Zacznij od nich.','potato · cauliflower · scallion · bitter gourd.',{enOnly:true}),
+ P('r15','Porridge is a good _.',['breakfast','distance','tractor'],'breakfast','usual','Owsianka to dobre śniadanie.','Kiedy je się owsiankę?','breakfast = śniadanie.'),
+ P('r16','I _ an egg in a pan.',['fry','bake','deliver'],'fry','usual','Smażę jajko na patelni.','Co robimy na patelni?','fry = smażyć.'),
+ P('r17','We _ potatoes in hot water.',['boil','bake','deliver'],'boil','usual','Gotujemy ziemniaki w gorącej wodzie.','Co robimy w gorącej wodzie?','boil = gotować.'),
+ P('r18','We _ a cake in the oven.',['bake','boil','deliver'],'bake','usual','Pieczemy ciasto w piekarniku.','Co robimy w piekarniku?','bake = piec.'),
+ P('r19','The trucks _ food to the store.',['deliver','bake','fry'],'deliver','usual','Ciężarówki dostarczają jedzenie do sklepu.','Co robi ciężarówka z jedzeniem?','deliver = dostarczać · store = sklep.'),
+ J('rj1','Eggs come from a tree.',false,'Eggs come from a chicken.','usual','Jajka pochodzą z drzewa.','Jajka znosi kura.'),
+ P('r20','Look at the _. It tells you the country.',['label','bowl','boat'],'label','usual','Spójrz na etykietę. Mówi, z jakiego kraju jest jedzenie.','Co jest przyklejone do produktu?','label = etykieta.'),
+ P('r21','Our food travels a long _.',['distance','plate','meal'],'distance','usual','Nasze jedzenie pokonuje długą drogę.','How far? Jak daleko?','distance = odległość.'),
+ P('r22','Milk goes on a _ from the farm to your home.',['journey','bowl','display'],'journey','usual','Mleko odbywa podróż z farmy do twojego domu.','Co odbywa mleko po drodze?','journey = podróż.'),
+ P('r23','Flour, eggs and milk are the _ in pancakes.',['ingredients','workers','labels'],'ingredients','usual','Mąka, jajka i mleko to składniki naleśników.','Z tego robi się naleśniki.','ingredients = składniki.'),
+ MU('rm4','Which two are fruit?',['dragon fruit','passion fruit','potato','butter'],['dragon fruit','passion fruit'],'usual','Które dwa to owoce?','Słowo fruit to podpowiedź.','dragon fruit = smoczy owoc · passion fruit = marakuja.'),
+ P('r24','Our group is making a _ about food.',['display','tractor','ship'],'display','usual','Nasza grupa robi wystawę o jedzeniu.','Co pokazujemy innym dzieciom?','display = wystawa.'),
+ P('r25','Breakfast is my first _ of the day.',['meal','crate','truck'],'meal','usual','Śniadanie to mój pierwszy posiłek w ciągu dnia.','Śniadanie, obiad i kolacja to…?','meal = posiłek.'),
+ P('r26','Our meal is mango and banana _.',['porridge','tractor','label'],'porridge','usual','Nasz posiłek to owsianka z mango i bananem.','To danie z książki Zary.','porridge = owsianka.'),
+ MT('rm5',[['maize','kukurydza'],['leek','por'],['peas','groszek'],['spinach','szpinak']],null,'Połącz słowo z tłumaczeniem.','Które znasz na pewno? Zacznij od nich.','maize · leek · peas · spinach.',{enOnly:true}),
+ TW('r27','Honey comes from _ and comes from _.',[['Turkey','Poland','Canada','India'],['near','far']],['Turkey','far'],'usual','Miód pochodzi z … i jest z … (blisko albo daleko).','Przypomnij sobie etykietę miodu z książki.','Honey → Turkey → far.'),
+ P('r28','First, the cucumbers _ on the farm.',['grow','packed','sold'],'grow','usual','Najpierw ogórki rosną na farmie.','First znaczy „najpierw”. Co się dzieje na farmie?','grow = rosnąć.'),
+ P('r29','Then, the cucumbers are _ into boxes.',['packed','grow','eat'],'packed','usual','Potem ogórki są pakowane do pudełek.','Co się robi z pudełkami?','packed = zapakowane.'),
+ P('r30','Next, the cucumbers are _ in a shop.',['sold','grow','eat'],'sold','usual','Następnie ogórki są sprzedawane w sklepie.','Co się dzieje w sklepie?','sold = sprzedane.'),
+ P('r31','Finally, we can _ the cucumbers.',['eat','packed','sold'],'eat','usual','Na koniec możemy zjeść ogórki.','Finally znaczy „na koniec”.','eat = jeść.'),
+ MU('rm6','Which two travel on water?',['ship','boat','truck','plane'],['ship','boat'],'usual','Które dwa pływają po wodzie?','Ciężarówka jeździ, a samolot lata.','ship = statek · boat = łódka.'),
+ TW('r32','Potatoes come from _ and come from _.',[['Poland','Sri Lanka','Canada','India'],['near','far']],['Poland','near'],'usual','Ziemniaki pochodzą z … i są z … (blisko albo daleko).','Ziemniaki rosną też w polskich polach.','Potatoes → Poland → near.'),
+ P('r33',"Rice came from _ Ananya's home.",['near','quite far from','very far from'],'near','past','Ryż przyjechał z bliska domu Ananyi.','Ananya mieszka w Indiach. Skąd jest ryż?','India: near.'),
+ P('r34',"Cashew nuts came from _ Ananya's home.",['quite far from','near','very far from'],'quite far from','past','Orzechy nerkowca przyjechały dość daleko od domu Ananyi.','Sri Lanka jest między dwoma kołami na mapie.','Sri Lanka: quite far from.'),
+ P('r35',"Honey came from _ Ananya's home.",['very far from','near','quite far from'],'very far from','past','Miód przyjechał bardzo daleko od domu Ananyi.','Turcja jest poza drugim kołem na mapie.','Turkey: very far from.'),
+ MT('rm7',[['farmer','grows food'],['chef','cooks food'],['truck driver','drives a truck'],['shopkeeper','sells food']],'usual','Kto co robi? Połącz w pary.','Santha uprawia, Rajan jeździ, Abdul sprzedaje.','farmer grows · chef cooks · truck driver drives · shopkeeper sells.'),
+ MU('rm8','How can we find out about food?',['Read books','Look at labels','Eat sweets','Go to sleep'],['Read books','Look at labels'],'usual','Jak możemy dowiedzieć się czegoś o jedzeniu?','Gdzie jest napisane, skąd jest jedzenie?','Read books · Look at labels.'),
+ Object.assign(P('r36',"'I love eating food from all around the world.' This child is _ the idea.",['for','against'],'for','usual','„Uwielbiam jeść jedzenie z całego świata”. To dziecko jest za tym pomysłem.','For znaczy „za”, against znaczy „przeciw”.','for = za.'),{q:'Food from far away: for or against? (Jedzenie z daleka: za czy przeciw?)'}),
+ Object.assign(P('r37',"'It is not good for the planet.' This child is _ the idea.",['against','for'],'against','usual','„To nie jest dobre dla planety”. To dziecko jest przeciw temu pomysłowi.','For znaczy „za”, against znaczy „przeciw”.','against = przeciw.'),{q:'Food from far away: for or against? (Jedzenie z daleka: za czy przeciw?)'}),
+ MT('rm9',[['dragon fruit','smoczy owoc'],['passion fruit','marakuja'],['coconut','kokos'],['banana','banan']],null,'Połącz słowo z tłumaczeniem.','Które znasz na pewno? Zacznij od nich.','dragon fruit · passion fruit · coconut · banana.',{enOnly:true}),
+ LT('rl1','Cows live on a _.','farm','usual','Krowy mieszkają na farmie.','Powiedz powoli: f… a… r… m.','farm = f + a + r + m.'),
+ LT('rl2','We eat _ every day.','food','usual','Codziennie jemy jedzenie.','Powiedz powoli: f… oo… d.','food = f + oo + d.'),
+ LT('rl3','We buy food at the _.','market','usual','Kupujemy jedzenie na targu.','Powiedz powoli: mar… ket.','market = mar + ket.'),
+ LT('rl4','We buy milk at the _.','store','usual','Kupujemy mleko w sklepie.','Powiedz powoli: st… o… re.','store = st + o + re.'),
+ SP('rs1','We eat lots of _.',['vegetables','vegetabels','wegetables'],'vegetables','usual','Jemy dużo warzyw.','Na końcu słychać -bles.','vegetables = warzywa.'),
+ SP('rs2','The farmer grows _.',['cauliflower','coliflower','cauliflawer'],'cauliflower','usual','Rolnik uprawia kalafiora.','Na początku jest cau-, na końcu -flower (kwiat).','cauliflower = kalafior.'),
+ SP('rs3','A _ grows in the ground.',['potato','potatoe','potatu'],'potato','usual','Ziemniak rośnie w ziemi.','Sześć liter: po-ta-to.','potato = ziemniak.'),
+ SP('rs4','Green _ is good for you.',['spinach','spinich','szpinach'],'spinach','usual','Zielony szpinak jest zdrowy.','Pisze się przez sp-, a na końcu -ach.','spinach = szpinak.'),
+ SP('rs5','I eat _ for breakfast.',['porridge','poridge','porridże'],'porridge','usual','Na śniadanie jem owsiankę.','Dwa razy r, a na końcu -dge.','porridge = owsianka.'),
+ SP('rs6','A _ can travel on the sea for 100 days.',['coconut','cokonut','coconat'],'coconut','usual','Kokos może płynąć po morzu przez 100 dni.','Dwa razy co-, potem -nut (orzech).','coconut = kokos.'),
+ SP('rs7','An _ is sweet.',['orange','orenge','oranże'],'orange','usual','Pomarańcza jest słodka.','Zaczyna się od or-, kończy na -ange.','orange = pomarańcza.')
 ]};
 const CARDS=[],CARD={};
 for(const l of Object.keys(BANK))for(const c of BANK[l]){c.l=+l;CARDS.push(c);CARD[c.id]=c;}
@@ -1577,7 +1660,9 @@ const LEVELS=[
  {n:5,title:'Wczoraj, dziś, jutro',sub:'to be we wszystkich czasach',time:'mix'},
  {n:6,title:'I play · she plays',sub:'co robię zwykle (Present Simple)',time:'usual'},
  {n:7,title:'played · went',sub:'co zrobiłem wczoraj (Past Simple)',time:'past'},
- {n:8,title:'will play',sub:'co zrobię jutro (Future Simple)',time:'future'}];
+ {n:8,title:'will play',sub:'co zrobię jutro (Future Simple)',time:'future'},
+ {n:9,badge:'0',title:'Where does food come from?',sub:'Unit 1 Review: skąd jest nasze jedzenie',time:'usual'}];
+function lvLab(l){const L=LEVELS[l-1];return L&&L.badge!=null?L.badge:l;}
 const INTRO={
  1:{title:'am · is · are',lead:'To be znaczy „być”. Po polsku mamy jestem, jesteś, jest, jesteśmy, są… Po angielsku wystarczą trzy słowa.',
     rows:[['I','am','ja jestem'],['he, she, it','is','on, ona, ono jest'],['you, we, they','are','ty jesteś, my jesteśmy, oni są']],
@@ -1602,9 +1687,12 @@ const INTRO={
     ex:['I played football.','We went to the zoo.']},
  8:{title:'will play',lead:'Co zrobię jutro: will + czasownik. Tak samo dla wszystkich.',
     rows:[['play','will play','zagram, zagramy'],['go','will go','pójdę, pójdziemy'],['she will plays ✗','she will play ✓','po will bez -s']],
-    ex:['I will visit Grandma.','We will go swimming.']}};
+    ex:['I will visit Grandma.','We will go swimming.']},
+ 9:{title:'Where does food come from?',lead:'Poćwiczymy Unit 1 ze szkoły: skąd jest jedzenie, jak daleko podróżuje i jak trafia na nasz talerz.',
+    rows:[['rice, honey','comes from','jedna rzecz: dodaj -s'],['eggs, oranges','come from','kilka rzeczy: bez -s'],['near · far','quite far · very far','blisko · daleko'],['First · Then','Next · Finally','najpierw · potem · następnie · na koniec']],
+    trap:'Turkey z wielkiej litery to Turcja, a turkey z małej to indyk.',ex:['Rice comes from India.','Eggs come from a chicken.','First, the cucumbers grow on the farm.']}};
 const TIME={past:{lab:'wczoraj',long:'Wczoraj (było)'},now:{lab:'teraz',long:'Teraz (jest)'},usual:{lab:'zwykle',long:'Zwykle (codziennie)'},future:{lab:'jutro',long:'Jutro (będzie)'}};
-const INSTR={match:'Połącz w pary.',who:'Kto pasuje do zdania?',when:'Kiedy to się dzieje?',pick:'Wybierz brakujące słowo.',judge:'To zdanie jest dobrze czy źle?',build:'Ułóż to zdanie po angielsku.',spell:'Które słowo jest napisane dobrze?',letters:'Ułóż słowo z literek.'};
+const INSTR={match:'Połącz w pary.',who:'Kto pasuje do zdania?',when:'Kiedy to się dzieje?',pick:'Wybierz brakujące słowo.',judge:'To zdanie jest dobrze czy źle?',build:'Ułóż to zdanie po angielsku.',spell:'Które słowo jest napisane dobrze?',letters:'Ułóż słowo z literek.',multi:'Wybierz dwie odpowiedzi.',two:'Wybierz obie odpowiedzi.',order:'Ułóż po kolei.',think:'Co myślisz?'};
 const WHEN_H={be:'Tu nie ma „yesterday” ani „tomorrow”. Czas widać po czasowniku: was/were, am/is/are czy will be?',verb:'Popatrz na czasownik: ma końcówkę -ed albo nową formę? Ma -s? A może stoi przed nim will?'};
 const PRAISE=['Super!','Brawo!','Świetnie!','Tak jest!','Ekstra!','Mistrz!'];
 
@@ -1612,11 +1700,11 @@ const PRAISE=['Super!','Brawo!','Świetnie!','Tak jest!','Ekstra!','Mistrz!'];
 function lvStats(l){const cs=CARDS.filter(c=>c.l===l);let m=0,seen=0,pts=0,n=0,c=0;
   for(const x of cs){const r=st.cards[x.id];if(r){seen++;if(r.b>=3)m++;pts+=(r.b-1)/4;n+=r.n||0;c+=r.c||0;}}
   return {total:cs.length,mastered:m,seen,prog:pts/cs.length,acc:n?c/n:null};}
-function isUnlocked(l){if(l===1||st.unlockAll)return true;
+function isUnlocked(l){if(l===1||l===9||st.unlockAll)return true;
   if(CARDS.some(c=>c.l===l&&st.cards[c.id]))return true;
   const p=lvStats(l-1);return p.mastered/p.total>=0.6;}
 function newItem(c,mode){return {c,mode,tries:0,state:'ask',wrong:[],opts:c.o?shuffle(c.o.slice()):null,placed:[],tiles:null,showPl:false};}
-const ONE_PER={match:1,judge:1};/* at most this many of these task types when a mission is put together (a retry after a mistake does not count) */
+const ONE_PER={match:1,judge:1,think:1,order:1};/* at most this many of these task types when a mission is put together (a retry after a mistake does not count) */
 function buildSession(only){
   const N=st.size||10,now=Date.now();
   const pool=CARDS.filter(c=>only?c.l===only:isUnlocked(c.l));
@@ -1632,16 +1720,20 @@ function buildSession(only){
   let pick=take(due,dueTake,'due',[]);
   take(fr,N-pick.length>newTake?newTake:N-pick.length,'new',pick);
   if(pick.length<N){shuffle(rest).sort((a,b)=>st.cards[a.id].b-st.cards[b.id].b);take(rest,N-pick.length,'practice',pick);}
-  const stage={who:0,when:0,match:1,spell:1,pick:1,letters:2,judge:2,build:3};
+  const stage={who:0,when:0,match:1,spell:1,pick:1,multi:1,letters:2,two:2,judge:2,build:3,order:3,think:3};
   pick=shuffle(pick).sort((x,y)=>stage[x.c.t]-stage[y.c.t]);
   return pick.map(p=>newItem(p.c,p.mode));
 }
 const pairsText=(c,sep)=>c.p.map(p=>fill(p[0])+' '+fill(p[1])).join(sep);
-function sayText(c){return c.t==='match'?pairsText(c,', ')+'.':fullSentence(c);}
+function sayText(c){return c.t==='match'?(c.enOnly?c.p.map(p=>fill(p[0])).join(', ')+'.':pairsText(c,', ')+'.'):fullSentence(c);}
 function fullSentence(c){
   if(c.t==='match')return pairsText(c,' · ');
   if(c.t==='who'||c.t==='pick'||c.t==='spell')return fill(c.s).replace('_',fill(c.a));
   if(c.t==='letters')return fill(c.s).replace('_',c.a.join(''));
+  if(c.t==='multi')return fill(c.s)+' '+c.a.map(fill).join('. ')+'.';
+  if(c.t==='two')return fill(c.s).replace('_',fill(c.a[0])).replace('_',fill(c.a[1]));
+  if(c.t==='order')return c.a.map(fill).join(', ')+'.';
+  if(c.t==='think')return fill(c.s)+' '+fill(c.a);
   if(c.t==='judge')return c.a?fill(c.s):fill(c.fix);
   if(c.t==='build'){const s=c.a.map(fill).join(' ').replace(' ?','?');return /[?!.]$/.test(s)?s:s+'.';}
   return fill(c.s);
@@ -1650,6 +1742,7 @@ function sayNow(c,it){
   if(c.t==='match')return '';
   if(it.state==='done'||c.t==='spell'||c.t==='letters')return fullSentence(c);
   if(c.t==='who'||c.t==='pick')return fill(c.s).replace('_',' … ');
+  if(c.t==='two')return fill(c.s).split('_').join(' … ');
   if(c.t==='build')return '';
   return fill(c.s);
 }
@@ -1726,19 +1819,19 @@ function renderHome(){
     hubTile('Kuźnia',trophyCount()+' z '+(ITEMS.length*MINS.length)+' przedmiotów',trophyEl('miecz','zelazo'),()=>go('forge'),canForgeAny()?'WYKUJ!':null),
     hubTile('Medale',Object.keys(st.medals).length+' z '+MEDALS.length,medalEl(MEDALS[0]),()=>go('medals')),
     hubTile('Kino',Object.keys(st.clips).length+' z '+CLIPS.length+' filmików',pix(CLAP,CLAP_P),()=>go('kino'))));
-  const parts=[['Część 1 · to be (być)',[1,2,3,4,5]],['Część 2 · czasowniki',[6,7,8]]];
+  const parts=[['Poziom 0 · lekcje podstawowe',[9]],['Część 1 · to be (być)',[1,2,3,4,5]],['Część 2 · czasowniki',[6,7,8]]];
   for(const [t,lv] of parts){const sec=h('div',{class:'path'},h('h2',{class:'sec-h'},t));for(const n of lv)sec.append(levelRow(n));r.append(sec);}
 }
 function levelRow(n){
   const L=LEVELS[n-1],s=lvStats(n),un=isUnlocked(n),pct=Math.round(s.prog*100);
   const isNew=un&&n>1&&!st.seenLv[n];
-  const kids=[h('span',{class:'lv-ava t-'+L.time},cre(n),h('span',{class:'lv-n'},String(n))),
+  const kids=[h('span',{class:'lv-ava t-'+L.time},cre(n),h('span',{class:'lv-n'},String(lvLab(n)))),
     h('span',{class:'lv-text t-'+L.time},h('span',{class:'lv-title'},L.title,isNew?h('span',{class:'tag-new'},'NOWY'):null),h('span',{class:'lv-sub'},L.sub),
       h('span',{class:'lv-who'},un?'Przewodnik: '+creName(n):'Czeka tu: ???'),
       un?h('span',{class:'lv-bar t-'+L.time},h('span',{class:'bar'},h('i',{style:'width:'+pct+'%'})),h('span',{class:'lv-meta',title:'zdania opanowane'},s.mastered+'/'+s.total))
         :h('span',{class:'lv-lock'},'Otworzy się po poziomie '+(n-1))),
     un?h('span',{class:'lv-go','aria-hidden':'true'},'›'):null];
-  return un?h('button',{class:'lv',type:'button','aria-label':'Poziom '+n+': '+L.title+'. Ćwicz ten poziom.',onclick:()=>startLesson(n)},kids)
+  return un?h('button',{class:'lv',type:'button','aria-label':'Poziom '+lvLab(n)+': '+L.title+'. Ćwicz ten poziom.',onclick:()=>startLesson(n)},kids)
            :h('div',{class:'lv locked'},kids);
 }
 
@@ -1761,6 +1854,8 @@ function sentenceEl(c,it){
     return h('p',{class:'sent',lang:'en'},parts[0],h('span',{class:'slot'+(done?' in':(live?' live':''))},done?c.a.join(''):(live||' ')),parts[1]);}
   if(c.t==='who'||c.t==='pick'||c.t==='spell'){const parts=s.split('_');
     return h('p',{class:'sent',lang:'en'},parts[0],h('span',{class:'slot'+(done?' in':'')},done?fill(c.a):' '),parts[1]);}
+  if(c.t==='two'){const p=s.split('_'),slot=i=>{const v=done?fill(c.a[i]):((it.pick&&it.pick[i])||' ');return h('span',{class:'slot'+(done?' in':((it.pick&&it.pick[i])?' live':''))},v);};
+    return h('p',{class:'sent',lang:'en'},p[0],slot(0),p[1],slot(1),p[2]);}
   if(c.t==='judge')return h('p',{class:'sent'+(done?(c.a?' ok':' bad'):''),lang:'en'},s);
   return h('p',{class:'sent',lang:'en'},s);
 }
@@ -1777,7 +1872,8 @@ function renderLesson(){
   const done=it.state==='done';
   const card=h('div',{class:'card lesson-card'+(done?' is-done':'')});
   if(c.time)card.append(timeline(c,it));
-  card.append(h('p',{class:'instr'},c.q||INSTR[c.t],c.cue?h('span',{class:'cue'},'zdanie z „nie”'):null));
+  const instr=c.t==='think'?(it.feel?'Why? Choose one. (Dlaczego? Wybierz jedno.)':'What do you think? Circle one answer. (Tu nie ma złej odpowiedzi.)'):(c.q||INSTR[c.t]);
+  card.append(h('p',{class:'instr'},instr,c.cue?h('span',{class:'cue'},'zdanie z „nie”'):null,c.tag?h('span',{class:'cue'},c.tag):null));
   const se=sentenceEl(c,it);if(se)card.append(se);
   const tools=h('div',{class:'tools'});
   const say=sayNow(c,it);
@@ -1787,7 +1883,9 @@ function renderLesson(){
   }
   if(tools.childNodes.length)card.append(tools);
   if(it.showPl&&!done&&c.t!=='build')card.append(h('p',{class:'pl-line',lang:'pl'},fill(c.pl)));
-  if(c.t==='build'||(c.t==='letters'&&!done))card.append(buildArea(c,it));else if(c.t==='match')card.append(matchArea(c,it));else if(!done)card.append(choiceArea(c,it));
+  if(c.t==='build'||c.t==='order'||(c.t==='letters'&&!done))card.append(buildArea(c,it));else if(c.t==='match')card.append(matchArea(c,it));
+  else if(c.t==='multi'){if(!done)card.append(multiArea(c,it));}else if(c.t==='two'){if(!done)card.append(twoArea(c,it));}else if(!done)card.append(choiceArea(c,it));
+  if(done&&(c.t==='multi'||c.t==='think'))card.append(h('div',{class:'build-line done answer-line',lang:'en'},(c.t==='multi'?c.a:[c.a]).map(w=>h('span',{class:'tile fixed'},fill(w)))));
   if((it.state==='hint'||done)&&it.cre==null){it.cre=pickCre(c.l);S.lastCre=it.cre;}
   const fb=feedbackEl(c,it);if(fb)card.append(fb);
   r.append(card);
@@ -1795,8 +1893,37 @@ function renderLesson(){
     const nb=h('button',{class:'btn primary big',type:'button',onclick:next},last?'Zobacz łup':'Dalej');r.append(h('div',{class:'next-bar'},nb));try{nb.focus({preventScroll:true});}catch(e){}}
   if(fb&&(it.state==='hint'||done)){try{fb.scrollIntoView({block:'nearest',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});}catch(e){}}
 }
+const longOpt=v=>String(v).length>16;
+function multiArea(c,it){
+  if(!it.sel)it.sel=[];const n=c.a.length,wide=it.opts.some(longOpt);
+  return h('div',{class:'task-stack'},
+    h('div',{class:'opts'},it.opts.map(v=>{const on=it.sel.includes(v),bad=it.wrong.includes(v);
+      return h('button',{class:'opt'+(wide?' long':'')+(bad?' wrong':(on?' sel':'')),type:'button',lang:'en','aria-pressed':String(on),disabled:bad||null,
+        onclick:()=>{if(on)it.sel=it.sel.filter(x=>x!==v);else{if(it.sel.length>=n)it.sel.shift();it.sel.push(v);}renderLesson();}},fill(v));})),
+    h('button',{class:'btn primary big',type:'button',disabled:it.sel.length!==n||null,onclick:()=>checkMulti(c,it)},'Sprawdź'));
+}
+function checkMulti(c,it){
+  const bad=it.sel.filter(v=>!c.a.includes(v));
+  if(!bad.length){finish(true);return;}
+  if(it.tries===0){it.tries=1;it.state='hint';it.wrong.push(...bad);it.sel=it.sel.filter(v=>c.a.includes(v));renderLesson();}
+  else{it.tries++;finish(false);}
+}
+function twoArea(c,it){
+  if(!it.two){it.two=c.o.map(o=>o.length>2?shuffle(o.slice()):o.slice());it.pick=c.o.map(()=>null);it.bad=c.o.map(()=>[]);}
+  return h('div',{class:'task-stack'},
+    it.two.map((opts,g)=>h('div',{class:'opts'},opts.map(v=>{const on=it.pick[g]===v,bad=it.bad[g].includes(v);
+      return h('button',{class:'opt'+(bad?' wrong':(on?' sel':'')),type:'button',lang:'en','aria-pressed':String(on),disabled:bad||null,onclick:()=>{it.pick[g]=v;renderLesson();}},fill(v));}))),
+    h('button',{class:'btn primary big',type:'button',disabled:it.pick.some(v=>v==null)||null,onclick:()=>checkTwo(c,it)},'Sprawdź'));
+}
+function checkTwo(c,it){
+  const miss=it.pick.map((v,g)=>v===c.a[g]?-1:g).filter(g=>g>=0);
+  if(!miss.length){finish(true);return;}
+  if(it.tries===0){it.tries=1;it.state='hint';miss.forEach(g=>{it.bad[g].push(it.pick[g]);it.pick[g]=null;});renderLesson();}
+  else{it.tries++;finish(false);}
+}
 function choiceArea(c,it){
   const done=it.state==='done';
+  if(c.t==='think'&&!it.feel)return h('div',{class:'opts'},c.feel.map(v=>h('button',{class:'opt',type:'button',lang:'en',onclick:()=>{it.feel=v;renderLesson();}},v)));
   if(c.t==='judge'){
     return h('div',{class:'opts'},[[true,'Dobrze ✓'],[false,'Źle ✗']].map(([v,lab])=>{
       let cls='opt';if(it.wrong.includes(v))cls+=' wrong';if(done&&v===c.a)cls+=' right';
@@ -1805,7 +1932,7 @@ function choiceArea(c,it){
   const isWhen=c.t==='when';
   const opts=isWhen?(c.l>=6?['past','usual','future']:['past','now','future']):it.opts;
   return h('div',{class:'opts'+(isWhen?' time-opts':'')},opts.filter(v=>!done||v===c.a||it.wrong.includes(v)).map(v=>{
-    let cls='opt'+(isWhen?' t-'+v:'');if(it.wrong.includes(v))cls+=' wrong';if(done&&v===c.a)cls+=' right';
+    let cls='opt'+(isWhen?' t-'+v:'')+(longOpt(v)?' long':'');if(it.wrong.includes(v))cls+=' wrong';if(done&&v===c.a)cls+=' right';
     return h('button',{class:cls,type:'button',lang:isWhen?'pl':'en',disabled:(done||it.wrong.includes(v))||null,onclick:()=>choose(v)},
       isWhen?[h('span',{class:'dot'}),TIME[v].long]:fill(v));}));
 }
@@ -1815,8 +1942,9 @@ function buildArea(c,it){
   const done=it.state==='done',lt=c.t==='letters'?' letter':'';
   const wrap=h('div',{style:'display:flex;flex-direction:column;gap:14px'});
   const line=h('div',{class:'build-line'+(done?' done':''),'aria-label':lt?'Twoje słowo':'Twoje zdanie',lang:'en'});
-  if(done){want.forEach(w=>line.append(h('span',{class:'tile fixed'+lt},w)));}
-  else{it.placed.forEach((ti,pos)=>line.append(h('button',{class:'tile placed'+lt,type:'button','aria-label':'Usuń: '+it.tiles[ti],onclick:()=>{it.placed.splice(pos,1);renderLesson();}},it.tiles[ti])));
+  const arrow=()=>c.t==='order'?h('span',{class:'flow-arrow','aria-hidden':'true'},'→'):null;
+  if(done){want.forEach((w,i)=>{if(i&&arrow())line.append(arrow());line.append(h('span',{class:'tile fixed'+lt},w));});}
+  else{it.placed.forEach((ti,pos)=>{if(pos&&arrow())line.append(arrow());line.append(h('button',{class:'tile placed'+lt,type:'button','aria-label':'Usuń: '+it.tiles[ti],onclick:()=>{it.placed.splice(pos,1);renderLesson();}},it.tiles[ti]));});
     if(!it.placed.length)line.append(h('span',{class:'build-ph',lang:'pl'},lt?'Dotykaj literek po kolei':'Dotykaj klocków poniżej po kolei'));}
   wrap.append(line);
   if(!done){
@@ -1847,7 +1975,7 @@ function mtTap(side,i){
   const li=side==='L'?i:m.sel.i,pos=side==='R'?i:m.sel.i;m.sel=null;
   if(c.p[li][1]===c.p[m.R[pos]][1]){m.pair[li]=pos;m.order.push(li);
     if(m.order.length===c.p.length){finish(true);return;}
-    if(st.tts)speak(fill(c.p[li][0])+' '+fill(c.p[li][1]));
+    if(st.tts)speak(c.enOnly?fill(c.p[li][0]):fill(c.p[li][0])+' '+fill(c.p[li][1]));
     renderLesson();return;}
   m.bad=[li,pos];
   if(it.tries===0){it.tries=1;it.state='hint';renderLesson();
@@ -1891,7 +2019,7 @@ function feedbackEl(c,it){
     return h('div',{class:'fb hint',role:'status','aria-live':'polite'},creBlock(it),
       h('div',{class:'fb-body'},
         h('p',{class:'fb-title'},'Prawie! Spróbuj jeszcze raz.'),newCreLine(it),h('p',null,hint),
-        ((c.t==='build'||c.t==='letters')&&it.keep>0)?h('p',{class:'fb-note',style:'color:inherit'},c.t==='letters'?'Pierwsze literki są dobre i zostały na miejscu.':'Pierwsze słowa są dobre i zostały na miejscu.'):null));
+        ((c.t==='build'||c.t==='order'||c.t==='letters')&&it.keep>0)?h('p',{class:'fb-note',style:'color:inherit'},c.t==='letters'?'Pierwsze literki są dobre i zostały na miejscu.':'Pierwsze słowa są dobre i zostały na miejscu.'):null));
   }
   if(it.state!=='done')return null;
   const good=it.correct;
@@ -1912,7 +2040,7 @@ function next(){if(!S||S.ending)return;if(S.i+1>=S.items.length){S.ending=true;S
 function introCard(l,onGo){
   const d=INTRO[l];
   return h('div',{class:'card intro'},
-    h('p',{class:'label'},'Nowy poziom '+l),
+    h('p',{class:'label'},'Nowy poziom '+lvLab(l)),
     h('h2',{class:'intro-title'},d.title),
     h('div',{class:'intro-head'},cre(l),h('div',{class:'bubble'},h('b',null,'Cześć! Tu '+creName(l)+'.'),d.lead)),
     h('div',{class:'rules'},d.rows.map(rw=>h('div',{class:'rule-row'},h('span',{class:'r-who',lang:'en'},rw[0]),h('span',{class:'r-arrow','aria-hidden':'true'},'→'),h('span',{class:'r-form',lang:'en'},rw[1]),h('span',{class:'r-pl'},rw[2])))),
@@ -2367,8 +2495,8 @@ function renderParent(){
   }
   r.append(voiceCard);
 
-  const lvRows=LEVELS.map(L=>{const s=lvStats(L.n);
-    return h('div',{class:'stat t-'+L.time},h('span',{class:'k'},L.n+'. '+L.title,h('small',null,s.seen?('widziane '+s.seen+'/'+s.total+' · opanowane '+s.mastered+(s.acc!=null?' · trafność '+Math.round(s.acc*100)+'%':'')):'jeszcze nie ćwiczony')),
+  const lvRows=LEVELS.slice().sort((a,b)=>(b.badge!=null)-(a.badge!=null)).map(L=>{const s=lvStats(L.n);
+    return h('div',{class:'stat t-'+L.time},h('span',{class:'k'},lvLab(L.n)+'. '+L.title,h('small',null,s.seen?('widziane '+s.seen+'/'+s.total+' · opanowane '+s.mastered+(s.acc!=null?' · trafność '+Math.round(s.acc*100)+'%':'')):'jeszcze nie ćwiczony')),
       h('span',{class:'v'},Math.round(s.prog*100)+'%'),h('span',{class:'bar'},h('i',{style:'width:'+Math.round(s.prog*100)+'%'})));});
   r.append(h('div',{class:'card pcard'},h('h2',null,'Postęp na poziomach'),h('p',{class:'note'},'Kruszce: '+MINS.map(k=>MIN[k].name.toLowerCase()+' '+(st.min[k]||0)).join(', ')+'. Medale: '+Object.keys(st.medals).length+'. Trofea: '+trophyCount()+'.'),h('div',{class:'srows'},lvRows)));
 
